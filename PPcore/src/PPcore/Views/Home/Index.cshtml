@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="row" style="margin-top:120px">
+    <div class="col-md-12">
+        <img class="center-block" src="~/images/logo_t.png" />
+        <div class="center-block box-login" style="margin-top:30px;">
+
+
+
+        <div class="row"></div>
+            <h3 class="text-center">ล็อกอินเข้าสู่ระบบ</h3>
+            <br/>
+            <form role="form">
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="ผู้ใช้งาน">
+                </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-key"></i>
+                    </span>
+                    <input type="password" class="form-control" placeholder="รหัสผ่าน">
+                </div>
+
+                <button class="btn btn-default btn-panel-yellow pull-left" type="button" style="width:120px" onclick="location.href='@Url.Action("Register", "Home")'">สมัครสมาชิก</button>
+                <button class="btn btn-default btn-panel-yellow pull-right" type="button" style="width:120px" onclick="location.href='@Url.Action("Index", "members")'">เข้าสู่ระบบ</button>
+
+                <div class="pull-right">
+                    <br/>
+                    <a href="#" style="color:white">ลืมรหัสผ่าน</a>
+
+                </div>
+            </form>
+            <br/>
+            
+
+
+
+        </div>
+    </div>
+</div>
+

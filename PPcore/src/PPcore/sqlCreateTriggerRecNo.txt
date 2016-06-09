@@ -1,0 +1,38 @@
+﻿-- product
+  
+IF OBJECT_ID(N'product_Update', N'TR') IS NOT NULL
+    exec sp_executesql N'DROP TRIGGER product_Update';
+GO
+
+CREATE TRIGGER product_Update ON product 
+INSTEAD OF INSERT 
+AS
+BEGIN
+	DECLARE @maxi int;
+	SELECT TOP 1 @maxi = rec_no FROM product WHERE product_type_code = (SELECT product_type_code FROM Inserted) ORDER BY rec_no DESC;
+	INSERT INTO product ([product_code], [product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id])
+	SELECT [product_code], [product_type_code], [product_group_code], [product_desc], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
+	FROM Inserted;
+END;
+
+GO
+
+-- mem_product
+
+IF OBJECT_ID(N'mem_product_Update', N'TR') IS NOT NULL
+    exec sp_executesql N'DROP TRIGGER mem_product_Update';
+GO
+
+CREATE TRIGGER mem_product_Update ON mem_product 
+INSTEAD OF INSERT 
+AS
+BEGIN
+	DECLARE @maxi int;
+	SELECT TOP 1 @maxi = rec_no FROM mem_product WHERE member_code = (SELECT member_code FROM Inserted) ORDER BY rec_no DESC;
+	INSERT INTO mem_product ([member_code], [product_code], [grow_area], [rec_no], [x_status], [x_note], [x_log], [id])
+	SELECT [member_code], [product_code], [grow_area], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
+	FROM Inserted;
+END;
+
+GO
+

@@ -1,0 +1,137 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12"  style="padding-top:15px;">
+            <table><tr><td><h4 class="txt-color-blue">ข้อมูลกิจกรรม</h4></td><td class="txt-color-blue" style="padding-top:2px">&nbsp;&nbsp;&nbsp;&nbsp;@ViewBag.Title</td></tr></table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-blue">
+                <div class="panel-body">
+
+                    @if (ViewBag.panelBarMenu == "Create")
+                    {
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a id="albums" data-toggle="tab">ข้อมูลกิจกรรม</a>
+                            </li>
+                        </ul>
+                    }
+                    else if (ViewBag.panelBarMenu == "Details")
+                    {
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a id="members" href="@Url.Action("Edit", "members", new {id=ViewBag.memberId})" data-toggle="tab" style="background-color:#093D6A;color:white;">ข้อมูลตามบัตรประชาชน<br />และข้อมูลการติดต่อกลับ</a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#albums" data-toggle="tab">ข้อมูลกิจกรรม</a>
+                            </li>
+                            <li>
+                                <a href="#albums_image" data-toggle="tab" onclick="console.log('yes');">ภาพกิจกรรม</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="albums">
+                                <div style="background-color:#093D6A;height:8px;"></div>
+                                <br />
+                                <div>
+                                    @RenderBody()
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="albums_image">
+                                <div style="background-color:#093D6A;height:8px;"></div>
+                                <h4>Profile Tab</h4>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div style="background-color:#093D6A;height:8px;"></div>
+                    <br />
+                    <div>
+                        @RenderBody()
+                    </div>
+
+</div>
+</div>
+        </div>
+    </div>
+</div>
+
+                
+@section scripts
+{
+    @RenderSection("scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            var nn = '@ViewContext.RouteData.Values["controller"]';
+            $('#' + nn).parent().addClass('active');
+
+            if (nn == "albums") {
+                $.datepicker.regional['th'] = {
+                    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                    yearRange: "-100:+0", yearOffSet: 543,beforeShow:dateDefault
+                };
+                $.datepicker.setDefaults($.datepicker.regional['th']);
+                $("#album_date").datepicker($.datepicker.regional["th"]);
+            }
+
+
+            var act = '@ViewContext.RouteData.Values["action"]';
+            if (act != "Create") {
+                if ("@ViewBag.memPhoto") {
+                    $('#waitMemPhoto').hide(); $('#emptyMemPhoto').hide();
+                    $('#picMemPhotoSrc').attr('src', '/@ViewBag.images_member/@ViewBag.memPhoto'); $('#picMemPhoto').show();
+                }
+                if ("@ViewBag.cidCardPhoto") {
+                    $('#waitCidCardPhoto').hide(); $('#emptyCidCardPhoto').hide();
+                    $('#picCidCardPhotoSrc').attr('src', '/@ViewBag.images_member/@ViewBag.cidCardPhoto'); $('#picCidCardPhoto').show();
+                }
+                $('#btnPrint').show();
+            }
+            if (act == "Details") {
+                $('input').each(function () {
+                    if (!($(this).attr('disabled')) ){
+                        $(this).attr({ 'disabled': 'disabled' });
+                    }
+                });
+                $('select').each(function () {
+                    if (!($(this).attr('disabled'))) {
+                        $(this).attr({ 'disabled': 'disabled' });
+                    }
+                });
+                if (!($('#birthdateButton').attr('disabled'))) {
+                    $('#birthdateButton').attr({ 'disabled': 'disabled' });
+                }
+            }
+
+            $('#btnPrint').on('click', function () {
+                var url = '@Url.Action("DetailsPdf", "members", new { id = "__id__" })';
+                //window.location.href = url.replace('__id__', data[1]);
+                //var win = window.open(url.replace('__id__', '@ViewBag.memberId'), '_blank');
+                var win = window.open(url.replace('__id__', '@ViewBag.memberId'));
+                win.focus();
+
+                //window.open(url.replace('__id__', '@ViewBag.memberId'), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+            });
+        });
+        $('#album_dateButton').click(function () {
+            $('#album_date').datepicker("show");
+        });
+
+        function dateDefault() {
+            if ($("#album_date").val() == "") { $("#album_date").datepicker("setDate", new Date()); }
+        }
+    </script>
+}
+

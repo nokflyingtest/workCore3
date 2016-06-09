@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="row" style="margin-top:120px">
+    <div class="col-md-12">
+        <img class="center-block" src="~/images/logo_t.png" />
+        <div class="center-block box-register" style="margin-top:30px;">
+
+
+
+        <div class="row"></div>
+            <h3 class="text-center">ลงทะเบียน</h3>
+            <br/>
+            <form role="form">
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-credit-card"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="รหัสบัตรประชาชน">
+                </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-user">&nbsp;</i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="ชื่อ">
+                </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-users"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="นามสกุล">
+                </div>
+                <div class="form-group input-group">
+                    <input type="text" class="form-control" placeholder="วันเดือนปีเกิด">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>
+                <button class="btn btn-default btn-panel-yellow pull-left" type="button" style="width:120px" onclick="location.href='@Url.Action("Index", "members")'">ยืนยัน</button>
+                <button class="btn btn-default btn-panel-yellow pull-right" type="button" style="width:120px" onclick="location.href='@Url.Action("Index", "members")'">เข้าสู่ระบบ</button>
+
+            </form>
+            <br/>
+            
+
+
+
+        </div>
+    </div>
+</div>
+
