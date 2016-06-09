@@ -113,7 +113,7 @@ namespace PPcore.Models
         [Display(Name = "แฟกซ์")]
         //[RegularExpression(@"^[0-9]{0,15}$", ErrorMessage = "PhoneNumber should contain only numbers")]
         public string fax { get; set; }
-        [Display(Name = "อีเมล์")]
+        [Display(Name = "อีเมล")]
         [RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "กรุณากรอกอีเมลล์แอดเดรส")]
         public string email { get; set; }
 

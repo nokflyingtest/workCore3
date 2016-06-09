@@ -250,6 +250,9 @@ namespace PPcore.Controllers
         [HttpGet]
         public async Task<IActionResult> SharePhoto(string access_token, string albumCode, string imageCode, string fileName)
         {
+            _configuration.GetSection("facebook").GetSection("AccessToken").Value = access_token;
+            
+
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
             uploads = Path.Combine(uploads, albumCode);
             uploads = Path.Combine(uploads, fileName);
