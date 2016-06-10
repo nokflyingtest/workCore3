@@ -25,7 +25,7 @@ namespace PPcore.Controllers
         }
 
         // GET: ini_config/Details/5
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -64,7 +64,7 @@ namespace PPcore.Controllers
         }
 
         // GET: ini_config/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -115,7 +115,7 @@ namespace PPcore.Controllers
         }
 
         // GET: ini_config/Delete/5
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {

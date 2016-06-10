@@ -243,22 +243,34 @@ namespace PPcore.Controllers
                 resp2 = await content.ReadAsStringAsync();
             }
 
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri("https://graph.facebook.com");
+            //     var content = new FormUrlEncodedContent(new[]
+            //   {
+            //      new KeyValuePair<string, string>("message", fileName),
+            //       //new KeyValuePair<string, string>("url", "https://cdn.theatlantic.com/assets/media/img/photo/2015/11/images-from-the-2016-sony-world-pho/s01_130921474920553591/main_1500.jpg")
+            //       new KeyValuePair<string, string>("source", "https://cdn.theatlantic.com/assets/media/img/photo/2015/11/images-from-the-2016-sony-world-pho/s01_130921474920553591/main_1500.jpg")
+            //   });
+            //    var result = client.PostAsync("/v2.6/me/photos?access_token=" + access_token, content).Result;
+            //    resp2 = result.Content.ReadAsStringAsync().Result;
+            //}
+
             //return Json(new { result = "success" });
             return Json(resp);
         }
 
         [HttpGet]
-        public async Task<IActionResult> SharePhoto(string access_token, string albumCode, string imageCode, string fileName)
+        public async Task<IActionResult> SharePhoto(string albumCode, string imageCode, string fileName)
         {
-            _configuration.GetSection("facebook").GetSection("AccessToken").Value = access_token;
-            
-
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
             uploads = Path.Combine(uploads, albumCode);
             uploads = Path.Combine(uploads, fileName);
 
             var appId = _configuration.GetSection("facebook").GetSection("AppId").Value;
             var appSecret = _configuration.GetSection("facebook").GetSection("AppSecret").Value;
+            var accessToken = _configuration.GetSection("facebook").GetSection("AccessToken").Value;
+            var pageId = _configuration.GetSection("facebook").GetSection("PageID").Value;
 
             string resp = "";
             string resp2 = "";
@@ -268,24 +280,14 @@ namespace PPcore.Controllers
             //FBUserID=126518931100981
             //var token = res.SelectToken("access_token"); //using (HttpResponseMessage response = await client.GetAsync("https://graph.facebook.com/v2.6/me?fields=id,name&access_token=" + token))
             using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync("https://graph.facebook.com/v2.6/me?access_token=" + access_token))
+            //using (HttpResponseMessage response = await client.GetAsync("https://graph.facebook.com/v2.6/me?access_token=" + access_token))
+            using (HttpResponseMessage response = await client.GetAsync("https://graph.facebook.com/v2.6/me?access_token=" + accessToken))
             using (HttpContent content = response.Content)
             {
                 resp = await content.ReadAsStringAsync();
             }
 
-            //using (var client = new HttpClient())
-            //{
-            //    client.BaseAddress = new Uri("https://graph.facebook.com");
-           //     var content = new FormUrlEncodedContent(new[]
-             //   {
-              //      new KeyValuePair<string, string>("message", fileName),
-             //       //new KeyValuePair<string, string>("url", "https://cdn.theatlantic.com/assets/media/img/photo/2015/11/images-from-the-2016-sony-world-pho/s01_130921474920553591/main_1500.jpg")
-             //       new KeyValuePair<string, string>("source", "https://cdn.theatlantic.com/assets/media/img/photo/2015/11/images-from-the-2016-sony-world-pho/s01_130921474920553591/main_1500.jpg")
-             //   });
-            //    var result = client.PostAsync("/v2.6/me/photos?access_token=" + access_token, content).Result;
-            //    resp2 = result.Content.ReadAsStringAsync().Result;
-            //}
+
 
 
             using (var client = new HttpClient())
@@ -299,7 +301,7 @@ namespace PPcore.Controllers
                     FileName = fileName
                 };
                 form.Add(fileContent);
-                var result = client.PostAsync("/v2.6/me/photos?access_token=" + access_token, form).Result;
+                var result = client.PostAsync("/v2.6/"+pageId+"/photos?access_token=" + accessToken, form).Result;
                 resp2 = result.Content.ReadAsStringAsync().Result;
             }
 
@@ -312,6 +314,8 @@ namespace PPcore.Controllers
         {
             var appId = _configuration.GetSection("facebook").GetSection("AppId").Value;
             var appSecret = _configuration.GetSection("facebook").GetSection("AppSecret").Value;
+            var accessToken = _configuration.GetSection("facebook").GetSection("AccessToken").Value;
+            var pageId = _configuration.GetSection("facebook").GetSection("PageID").Value;
 
             string resp = "";
             string resp2 = "";
@@ -323,7 +327,7 @@ namespace PPcore.Controllers
                 {
                     new KeyValuePair<string, string>("name", albumName),
                 });
-                var result = client.PostAsync("/v2.6/me/albums?access_token=" + access_token, content).Result;
+                var result = client.PostAsync("/v2.6/"+ pageId + "/albums?access_token=" + accessToken, content).Result;
                 resp = result.Content.ReadAsStringAsync().Result;
             }
             List<photo> p = new List<photo>();
@@ -358,7 +362,7 @@ namespace PPcore.Controllers
                             FileName = fileName
                         };
                         form.Add(fileContent);
-                        var result = client.PostAsync("/v2.6/"+albumId+"/photos?access_token=" + access_token, form).Result;
+                        var result = client.PostAsync("/v2.6/"+albumId+"/photos?access_token=" + accessToken, form).Result;
                         resp2 = result.Content.ReadAsStringAsync().Result;
 
 
