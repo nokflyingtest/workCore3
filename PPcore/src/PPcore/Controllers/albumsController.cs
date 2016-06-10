@@ -32,7 +32,13 @@ namespace PPcore.Controllers
         }
 
         // GET: albums
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // GET: albums
+        public async Task<IActionResult> ListAlbum()
         {
             var album = _context.album;
             ViewBag.countRecords = album.Count();

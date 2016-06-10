@@ -1,6 +1,4 @@
-﻿@model IEnumerable<PPcore.Models.album>
-
-<div id="page-wrapper">
+﻿<div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12" style="padding-top:15px;">
             <table><tr><td><h4 class="txt-color-blue">ภาพกิจกรรม</h4></td></tr></table>
@@ -9,49 +7,16 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-blue">
+                <!-- .panel-heading -->
                 <div class="panel-heading">
                     <div class="pull-left" style="padding-top:5px;">ภาพกิจกรรม</div>
-                    <div class="pull-right" style="margin-top:-2px;">
-                        <button id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="location.href='@Url.Action("Create", "albums")'">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;สร้างอัลบั้ม&nbsp;&nbsp;&nbsp;</button>
-                        <button id="btnEdit" class="btn btn-default btn-panel-yellow" >&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;แก้ไขอัลบั้ม&nbsp;&nbsp;&nbsp;</button>
-                        <button id="btnDelete" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-eraser" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ลบอัลบั้ม&nbsp;&nbsp;&nbsp;</button>
-                        <button id="btnDetails" class="btn btn-default btn-panel-yellow" >&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูลและแชร์ภาพ</button>
-                    </div>
+                    <div id="albumTopBarMenu" class="pull-right" style="margin-top:-2px;"></div>
                 </div>
-
                 <!-- /.panel-heading -->
-                <div style="position:absolute;left:250px;top:70px;"><span class="badge">จำนวนรายการทั้งหมด @ViewBag.countRecords รายการ</span></div>
-                <div class="panel-body">
-                    <div class="dataTable_wrapper" style="padding-right:10px;">
-                        <table class="table table-striped table-bordered table-hover" id="dataTablesSimple">
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.album_name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.id)</th>
-                                    <th>@Html.DisplayNameFor(model => model.album_desc)</th>
-                                    <th>@Html.DisplayNameFor(model => model.album_date)</th>
-                                    <th>@Html.DisplayNameFor(model => model.created_by)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.album_name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.id)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.album_desc)</td>
-                                        <!-- <td>@Html.DisplayFor(modelItem => item.album_date)</td> -->
-                                        <td>@String.Format("{0:dd MMMM yyyy}",item.album_date)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.created_by)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
 
 
+                <div id="albumRenderBody" class="panel-body">
 
-
-                    </div>
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -70,12 +35,12 @@
                     </div>
                     <div class="modal-body container-fluid">
                         <div class="row">
-                            <div class="col-md-3"><div class="pull-right">@Html.DisplayNameFor(model => model.album_name)</div></div>
+                            <div class="col-md-3"><div class="pull-right"> Html.DisplayNameFor(model => model.album_name)</div></div>
                             <div id="albumDeleteName" class="col-md-9" style="color:orangered"></div>
                         </div>
                         <br/>
                         <div class="row">
-                            <div class="col-md-3"><div class="pull-right">@Html.DisplayNameFor(model => model.album_date)</div></div>
+                            <div class="col-md-3"><div class="pull-right"> Html.DisplayNameFor(model => model.album_date)</div></div>
                             <div id="albumDeleteDate" class="col-md-9" style="color:orangered"></div>
                         </div>
                         <br/>
@@ -90,6 +55,9 @@
                 </div>
             </div>
         </div>
+        <!-- /Modal Delete -->
+
+
 
     </div>
 
@@ -98,50 +66,144 @@
 
 @section Scripts {
     <script src="~/lib/bootstrap/js/modal.js"></script>
-    <script>
-        $(document).ready(function () {
-            var tableMember = setDataTablesSimple();
-            tableMember.$('tr:first').click();
+<script>
+    $(document).ready(function () {
+        listAlbum();
 
-            $('#btnEdit').on('click', function () {
-                var data = tableMember.row('.selected').data();
-                var url = '@Url.Action("Edit", "albums", new { id = "__id__" })';
-                window.location.href = url.replace('__id__', data[1]);
-            });
 
-            $('#btnDelete').on('click', function () {
-                var datarow = tableMember.row('.selected').data();
-                $('#albumModalLabel').text('ยืนยันการลบอัลบั้ม');
-                $('#albumDeleteName').text(datarow[0]);
-                $('#albumDeleteDate').text(datarow[3]);
-                $('#albumDeleteModal').modal({ backdrop: 'static', keyboard: false });
-            });
-            $('#btnDeleteConfirm').on('click', function () {
-                var datarow = tableMember.row('.selected').data();
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("Delete", "albums")" + "/" + datarow[1],
+    });
+
+    function listAlbum() {
+        var topBarMenu = "";
+        topBarMenu += '<button id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="albumCreate();">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;สร้างอัลบั้ม&nbsp;&nbsp;&nbsp;</button> ';
+        topBarMenu += '<button id="btnEdit" class="btn btn-default btn-panel-yellow" >&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;แก้ไขอัลบั้ม&nbsp;&nbsp;&nbsp;</button> ';
+        topBarMenu += '<button id="btnDelete" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-eraser" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ลบอัลบั้ม&nbsp;&nbsp;&nbsp;</button> ';
+        topBarMenu += '<button id="btnDetails" class="btn btn-default btn-panel-yellow" >&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูลและแชร์ภาพ</button> ';
+        $('#albumTopBarMenu').html(topBarMenu);
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ListAlbum", "albums")",
+            success: function (data) {
+                $('#albumRenderBody').html(data);
+                var tableMember = setDataTablesSimple();
+                tableMember.$('tr:first').click();
+
+
+                $('#btnEdit').on('click', function () {
+                    var data = tableMember.row('.selected').data();
+                    var url = '@Url.Action("Edit", "albums", new { id = "__id__" })';
+                    window.location.href = url.replace('__id__', data[1]);
+                });
+
+                $('#btnDelete').on('click', function () {
+                    var datarow = tableMember.row('.selected').data();
+                    $('#albumModalLabel').text('ยืนยันการลบอัลบั้ม');
+                    $('#albumDeleteName').text(datarow[0]);
+                    $('#albumDeleteDate').text(datarow[3]);
+                    $('#albumDeleteModal').modal({ backdrop: 'static', keyboard: false });
+                });
+                $('#btnDeleteConfirm').on('click', function () {
+                    var datarow = tableMember.row('.selected').data();
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("Delete", "albums")" + "/" + datarow[1],
+                        success: function (data) {
+                            $('#albumDeleteModal').modal('hide');
+                            window.location.href = '@Url.Action("Index", "albums")';
+                        },
+                        error: function (xhr, textStatus, error) {
+                            console.log(xhr.statusText);
+                            console.log(textStatus);
+                            console.log(error);
+                            $('#albumDeleteModal').modal('hide');
+                            window.location.href = '@Url.Action("Index", "albums")';
+                        }
+
+                    });
+                });
+
+                $('#btnDetails').on('click', function () {
+                    var data = tableMember.row('.selected').data();
+                    var url = '@Url.Action("Details", "albums", new { id = "__id__" })';
+                    window.location.href = url.replace('__id__', data[1]);
+                });
+            },
+            error: function (xhr, textStatus, error) {
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+    function albumCreate() {
+        var topBarMenu = "";
+        topBarMenu += '<button id="btnBack" class="btn btn-default btn-panel-yellow" onclick="listAlbum();">&nbsp;<i class="fa fa-reply" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;กลับ&nbsp;&nbsp;</button>';
+        $('#albumTopBarMenu').html(topBarMenu);
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("Create", "albums")",
+            success: function (data) {
+                $('#albumRenderBody').html(data);
+                $("#album_code").val('@ViewBag.album_code');
+                $.datepicker.regional['th'] = {
+                    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                    yearRange: "-100:+0", yearOffSet: 543,
+                    beforeShow: function () { if ($("#album_date").val() == "") { $("#album_date").datepicker("setDate", new Date()); } }
+                };
+                $.datepicker.setDefaults($.datepicker.regional['th']);
+                $("#album_date").datepicker($.datepicker.regional["th"]);
+                $('#album_dateButton').click(function () {
+                    $('#album_date').datepicker("show");
+                });
+
+                $('#btnSaveX').on('click', function (e) {
+                    e.preventDefault();
+                    $.ajax({
+                        async:false,
+                        type: "POST",
+                        url: "@Url.Action("Create", "albums")",
+                        data: {
+                        album_name: $("#album_name").val(),
+                        album_desc: $("#album_desc").val(),
+                        album_date: $("#album_date").val(),
+                        },
                     success: function (data) {
-                        $('#albumDeleteModal').modal('hide');
-                        window.location.href = '@Url.Action("Index", "albums")';
-                    },
-                    error: function (xhr, textStatus, error) {
-                        console.log(xhr.statusText);
-                        console.log(textStatus);
-                        console.log(error);
-                        $('#albumDeleteModal').modal('hide');
-                        window.location.href = '@Url.Action("Index", "albums")';
+                        window.location.href = "@Url.Action("Index", "albums")";
                     }
-                  
                 });
             });
 
-            $('#btnDetails').on('click', function () {
-                var data = tableMember.row('.selected').data();
-                var url = '@Url.Action("Details", "albums", new { id = "__id__" })';
-                window.location.href = url.replace('__id__', data[1]);
-            });
-        });
 
-    </script>
+
+
+            },
+            error: function (xhr, textStatus, error) {
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+    function albumEdit() {
+        $('#btnCreate').on('click', function () {
+            var data = tableMember.row('.selected').data();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Create", "albums")" + "/" + data[1],
+                success: function (data) {
+                    $('#albumDeleteModal').modal('hide');
+                    window.location.href = '@Url.Action("Index", "albums")';
+                },
+            error: function (xhr, textStatus, error) {
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+
+        });
+    });
+    }
+</script>
+
 }
