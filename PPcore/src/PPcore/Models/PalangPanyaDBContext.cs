@@ -131,7 +131,7 @@ namespace PPcore.Models
 
                 entity.Property(e => e.rowversion)
                     .HasColumnType("timestamp")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .ValueGeneratedOnAddOrUpdate().IsConcurrencyToken();
 
                 entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
 
@@ -1069,10 +1069,10 @@ namespace PPcore.Models
                 entity.Property(e => e.x_status).HasColumnType("char(1)");
             });
         }
-        public DbSet<product> product { get; set; }
-        public DbSet<product_group> product_group { get; set; }
-        public DbSet<product_type> product_type { get; set; }
-        public DbSet<mem_product> mem_product { get; set; }
+        public virtual DbSet<product> product { get; set; }
+        public virtual DbSet<product_group> product_group { get; set; }
+        public virtual DbSet<product_type> product_type { get; set; }
+        public virtual DbSet<mem_product> mem_product { get; set; }
 
         public virtual DbSet<course_grade> course_grade { get; set; }
         public virtual DbSet<course_group> course_group { get; set; }
@@ -1106,6 +1106,6 @@ namespace PPcore.Models
         public virtual DbSet<project_sponsor> project_sponsor { get; set; }
         public virtual DbSet<project_supporter> project_supporter { get; set; }
         public virtual DbSet<train_place> train_place { get; set; }
-        public DbSet<album> album { get; set; }
+        public virtual DbSet<album> album { get; set; }
     }
 }

@@ -73,7 +73,6 @@ namespace PPcore.Controllers
         public async Task<IActionResult> Create([Bind("album_code,album_desc,album_name,created_by,album_date,rowversion")] album album)
         {
             album.x_status = "Y";
-            //album.album_code = DateTime.Now.ToString("yyMMddhhmmss");
             album.created_by = "Administrator";
 
             _context.Add(album);
@@ -165,6 +164,8 @@ namespace PPcore.Controllers
                         using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                         {
                             await SourceStream.CopyToAsync(fileStream);
+
+
                         }
                     }
                 }
