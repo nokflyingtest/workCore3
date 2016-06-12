@@ -39,48 +39,120 @@
     </div>
 </div>
 
+<!-- modal -->
+<div id="changeDescModal" class="modal fade modalForm1"  tabindex="-1" role="dialog" aria-labelledby="changeDescModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div id="changeDescModalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
+                <h4 class="modal-title" id="changeDescModalLabel" style="vertical-align:middle;">แก้ไขคำอธิบาย</h4>
+            </div>
+            <div class="modal-body container-fluid">
 
 
-@section Scripts {
+                <div class="form-horizontal">
+                    <div id="changeDescImageCode" style="display:none"></div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">คำอธิบาย</label>
+                        <div class="col-md-9">
+                            <textarea id="changeDescText" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button class="btn btn-success" onclick="changeDescSave();">บันทึก</button>
+                        </div>
+                    </div>
+                </div>
 
-    <script>
-        $(document).ready(function () {
-            //$.datepicker.regional['th'] = {
-            //    dateFormat: 'dd MM yy', changeMonth: true, changeYear: true, constrainInput: true,
-            //    yearRange: "-100:+0", yearOffSet: 543,beforeShow:dateDefault
-            //};
-            $.datepicker.regional['th'] = {
-                dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
-                yearRange: "-100:+0", yearOffSet: 543, beforeShow: dateDefault
-            };
-            $.datepicker.setDefaults($.datepicker.regional['th']);
-            $("#album_date").datepicker($.datepicker.regional["th"]);
 
-            if ("@ViewBag.FormAction" == "Create") {
-                $("#album_code").val('@ViewBag.album_code');
-            }
+            </div>
+        </div>
 
-            //e.preventDefault();
+    </div>
+</div>
+<!-- /.modal -->
 
-            $.ajax({
-                async:false,
-                type: "GET",
-                url: "@Url.Action("ListAlbumPhoto", "albums", new {albumCode=ViewBag.album_code})",
-                success: function (resp) {
-                    resp = JSON.parse(resp);
-                    for (var i = 0; i < resp.length; i++) {
-                        $('#albumPanel').append('<img style="height:200px;margin-top:10px;margin-right:10px;" class="img-thumbnail" src="/' + resp[i].filePath + '" />');
-                    }
+    @section Scripts {
+
+        <script>
+            $(document).ready(function () {
+                //$.datepicker.regional['th'] = {
+                //    dateFormat: 'dd MM yy', changeMonth: true, changeYear: true, constrainInput: true,
+                //    yearRange: "-100:+0", yearOffSet: 543,beforeShow:dateDefault
+                //};
+                $.datepicker.regional['th'] = {
+                    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                    yearRange: "-100:+0", yearOffSet: 543, beforeShow: dateDefault
+                };
+                $.datepicker.setDefaults($.datepicker.regional['th']);
+                $("#album_date").datepicker($.datepicker.regional["th"]);
+
+                if ("@ViewBag.FormAction" == "Create") {
+                    $("#album_code").val('@ViewBag.album_code');
                 }
+
+                //e.preventDefault();
+
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "@Url.Action("ListAlbumPhoto", "albums", new {albumCode=ViewBag.album_code})",
+                    success: function (resp) {
+                        if (resp != "") {
+                            resp = JSON.parse(resp);
+                            for (var i = 0; i < resp.length; i++) {
+                                var imgblock = '<div class="img-thumbnail" style="height:300px;width:250px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                                imgblock += '<img class="img-responsive center-block" style="height:210px" src="/' + resp[i].filePath + '" />';
+                                var desc = "";
+                                if (resp[i].image_desc != "") {
+                                    if (resp[i].image_desc.length > 25) {
+                                        desc = resp[i].image_desc.substring(0, 25) + '...';
+                                    } else { desc = resp[i].image_desc; }
+                                } else { desc = resp[i].image_desc; }
+
+                                var idSave = "desc" + resp[i].image_code;
+                                imgblock += '<div id="' + idSave + '" class="btn btn-default center-block btn-photo-blue" style="margin-top:5px;width:100%" onclick="changeDesc(\'' + resp[i].image_code + '\',\'' + resp[i].image_desc + '\');">' + desc + '</div>';
+
+                                imgblock += '</div>'; console.log(imgblock);
+
+                                $('#albumPanel').append(imgblock);
+                            }
+                        }
+                    }
+                });
+
+
             });
-
-
-        });
-        $('#album_dateButton').click(function () {
-            $('#album_date').datepicker("show");
-        });
-        function dateDefault() {
-            if ($("#album_date").val() == "") { $("#album_date").datepicker("setDate", new Date()); }
-        }
-    </script>
-}
+            $('#album_dateButton').click(function () {
+                $('#album_date').datepicker("show");
+            });
+            function dateDefault() {
+                if ($("#album_date").val() == "") { $("#album_date").datepicker("setDate", new Date()); }
+            }
+            function changeDesc(imageCode, imageDesc) {
+                $('#changeDescImageCode').val(imageCode);
+                $('#changeDescText').val(imageDesc);
+                $('#changeDescModal').modal({ backdrop: 'static', keyboard: false });
+            }
+            function changeDescSave() {
+                var d = "desc" + $('#changeDescImageCode').val();
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "/albums/ChangePhotoDesc?imageCode="+$('#changeDescImageCode').val()+"&imageDesc="+$('#changeDescText').val(),
+                    success: function (resp) {
+                        if (resp != "") {
+                            var desc;
+                            if (resp.imageDesc.length > 25) {
+                                desc = resp.imageDesc.substring(0, 25) + '...';
+                            } else { desc = resp.imageDesc; }
+                            $("div[id='" + d + "']").text(desc);
+                        }
+                    }
+                });
+                $('#changeDescModal').modal('toggle');
+            }
+        </script>
+    }

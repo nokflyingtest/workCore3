@@ -70,21 +70,35 @@ namespace PPcore.Controllers
         // POST: albums/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("album_code,album_desc,album_name,created_by,album_date,rowversion")] album album)
+        public IActionResult Create([Bind("album_code,album_desc,album_name,created_by,album_date,rowversion")] album album)
         {
-            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
-            uploads = Path.Combine(uploads, album.album_code);
-
-            var dest = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
-            dest = Path.Combine(dest, album.album_code);
-
-            Directory.Move(uploads, dest);
-
             album.x_status = "Y";
             album.created_by = "Administrator";
 
             _context.Add(album);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
+            var pImages = _context.pic_image.Where(p => (p.ref_doc_code == album.album_code) && (p.x_status == "N")).ToList();
+            if (pImages != null)
+            {
+                foreach (var pImage in pImages)
+                {
+                    pImage.x_status = "Y";
+                    _context.Update(pImage);
+                }
+                _context.SaveChanges();
+
+                var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
+                uploads = Path.Combine(uploads, album.album_code);
+
+                DirectoryInfo di = new DirectoryInfo(uploads);
+                if (di.Exists)
+                {
+                    var dest = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+                    dest = Path.Combine(dest, album.album_code);
+                    Directory.Move(uploads, dest);
+                }
+            }
             return RedirectToAction("Index");
         }
 
@@ -101,6 +115,9 @@ namespace PPcore.Controllers
             {
                 return NotFound();
             }
+
+            clearImageUpload(album.album_code);
+
             ViewBag.FormAction = "Edit";
             ViewBag.album_code = album.album_code;
             return View(album);
@@ -111,13 +128,36 @@ namespace PPcore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("album_code,album_desc,album_name,created_by,album_date,id,rowversion,x_log,x_note,x_status")] album album)
+        public IActionResult Edit(string id, [Bind("album_code,album_desc,album_name,created_by,album_date,id,rowversion,x_log,x_note,x_status")] album album)
         {
-
             try
             {
                 _context.Update(album);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
+
+                var pImages = _context.pic_image.Where(p => (p.ref_doc_code == album.album_code) && (p.x_status == "N")).ToList();
+                if (pImages != null)
+                {
+                    foreach (var pImage in pImages)
+                    {
+                        pImage.x_status = "Y";
+                        _context.Update(pImage);
+                    }
+                    _context.SaveChanges();
+
+                    var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
+                    uploads = Path.Combine(uploads, album.album_code);
+
+                    DirectoryInfo di = new DirectoryInfo(uploads);
+                    if (di.Exists)
+                    {
+                        var dest = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+                        dest = Path.Combine(dest, album.album_code);
+                        Directory.CreateDirectory(dest);
+                        foreach (FileInfo file in di.GetFiles()) file.CopyTo(Path.Combine(dest, file.Name));
+                        di.Delete(true);
+                    }
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -151,7 +191,7 @@ namespace PPcore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadAlbumPhoto(ICollection<IFormFile> file, string albumCode)
+        public IActionResult UploadAlbumPhoto(ICollection<IFormFile> file, string albumCode)
         {
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
             uploads = Path.Combine(uploads, albumCode);
@@ -165,20 +205,22 @@ namespace PPcore.Controllers
                     fileName += Microsoft.Net.Http.Headers.ContentDispositionHeaderValue.Parse(fi.ContentDisposition).FileName.Trim('"');
                     fileExt = Path.GetExtension(fileName);
                     fileName = Path.GetFileNameWithoutExtension(fileName);
-                    fileName = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
-                    imageCode = "A" + DateTime.Now.ToString("yyMMddhhmmssffffff");
+                    fileName = fileName.Substring(0, (fileName.Length <= (50-fileExt.Length) ? fileName.Length : (50 - fileExt.Length))) + fileExt;
+                    
+                    imageCode = "A" + DateTime.Now.ToString("yyMMddhhmmssfffffff") + fileExt;
                     using (var SourceStream = fi.OpenReadStream())
                     {
-                        using (var fileStream = new FileStream(Path.Combine(uploads, imageCode + fileExt), FileMode.Create))
+                        using (var fileStream = new FileStream(Path.Combine(uploads, imageCode), FileMode.Create))
                         {
-                            await SourceStream.CopyToAsync(fileStream);
-
+                            SourceStream.CopyTo(fileStream);
+                            
                             pic_image pic_image = new pic_image();
                             pic_image.image_code = imageCode;
-                            pic_image.x_status = "Y";
+                            pic_image.x_status = "N";
                             pic_image.image_name = fileName;
-                            pic_image.ref_doc_type = fileExt;
-                            pic_image.ref_doc_code = "album";
+                            pic_image.image_desc = fileName;
+                            pic_image.ref_doc_type = "album";
+                            pic_image.ref_doc_code = albumCode;
                             _context.pic_image.Add(pic_image);
                             _context.SaveChanges();
                         }
@@ -195,21 +237,25 @@ namespace PPcore.Controllers
             var abName = album.album_name;
             var abDesc = album.album_desc;
 
-            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
-            uploads = Path.Combine(uploads, albumCode);
-            string[] fileEntries = Directory.GetFiles(uploads);
-            List<photo> p = new List<photo>();
-            string fiN; string fiP;
-            foreach (string fileName in fileEntries)
+            var fiN = ""; var fiP = "";
+            List<photo> ph = new List<photo>();
+            var pImages = _context.pic_image.Where(p => (p.ref_doc_code == albumCode) && (p.x_status == "Y")).ToList();
+            if (pImages != null)
             {
-                fiN = Path.GetFileName(fileName);
-                fiP = Path.Combine(albumCode, fiN);
-                fiP = Path.Combine(_configuration.GetSection("Paths").GetSection("images_album").Value, fiP);
-                p.Add(new photo { albumCode = albumCode, image_code = "", fileName = fiN, filePath = fiP, albumName = abName, albumDesc = abDesc });
+                foreach (var pImage in pImages)
+                {
+                    fiN = pImage.image_code;
+                    fiP = Path.Combine(albumCode, fiN);
+                    fiP = Path.Combine(_configuration.GetSection("Paths").GetSection("images_album").Value, fiP);
+                    ph.Add(new photo { albumCode = albumCode, image_code = pImage.image_code, image_desc = pImage.image_desc, fileName = fiN, filePath = fiP, albumName = abName, albumDesc = abDesc });
+                }
+                string pjson = JsonConvert.SerializeObject(ph);
+                return Json(pjson);
             }
-            string pjson = JsonConvert.SerializeObject(p);
-            //return Json(new { result = "success", uploads = uploads, photos = pjson });
-            return Json(pjson);
+            else
+            {
+                return Json("");
+            }
         }
 
         [HttpGet]
@@ -494,6 +540,34 @@ namespace PPcore.Controllers
             string pjson = JsonConvert.SerializeObject(p);
             return Json(pjson);
         }
+
+        private void clearImageUpload(string albumCode)
+        {
+            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
+            uploads = Path.Combine(uploads, albumCode);
+            DirectoryInfo di = new DirectoryInfo(uploads);
+            if (di.Exists) { di.Delete(true); }
+
+            var pic_images = _context.pic_image.Where(p => (p.ref_doc_code == albumCode) && (p.x_status == "N")).ToList();
+            foreach (var p in pic_images)
+            {
+                _context.pic_image.Remove(p);
+                _context.SaveChanges();
+            }
+            
+        }
+
+        [HttpGet]
+        public IActionResult ChangePhotoDesc(string imageCode, string imageDesc)
+        {
+            pic_image pi = _context.pic_image.SingleOrDefault(p => p.image_code == imageCode);
+
+            pi.image_desc = imageDesc;
+            _context.Update(pi);
+        
+            _context.SaveChanges();
+            return Json(new { result = "success", imageDesc = imageDesc });
+        }
     }
 
 
@@ -501,6 +575,7 @@ namespace PPcore.Controllers
     {
         public string albumCode;
         public string image_code;
+        public string image_desc;
         public string fileName;
         public string filePath;
 

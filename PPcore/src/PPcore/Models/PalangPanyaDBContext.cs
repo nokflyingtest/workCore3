@@ -863,6 +863,7 @@ namespace PPcore.Models
                 entity.Property(e => e.image_file).HasColumnType("text");
 
                 entity.Property(e => e.image_name).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.image_desc).HasColumnType("nvarchar(200)");
 
                 entity.Property(e => e.ref_doc_code).HasColumnType("varchar(30)");
 

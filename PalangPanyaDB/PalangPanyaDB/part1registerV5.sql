@@ -542,6 +542,7 @@ go
 create table pic_image (
    image_code           varchar(30)          not null,
    image_name           nvarchar(50)         null,
+   image_desc           nvarchar(200)        null,
    ref_doc_type         varchar(30)          null,
    ref_doc_code         varchar(30)          null,
    image_file           text                 null,

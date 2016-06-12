@@ -73,14 +73,16 @@ namespace PPcore.Controllers
 
             if (!String.IsNullOrEmpty(member.mem_photo))
             {
-                pic_image m = _context.pic_image.Single(i => i.image_code == member.mem_photo);
-                ViewBag.memPhoto = member.mem_photo + m.ref_doc_type;
+                //pic_image m = _context.pic_image.Single(i => i.image_code == member.mem_photo);
+                //ViewBag.memPhoto = m.image_name;
+                ViewBag.memPhoto = member.mem_photo;
             }
 
             if (!String.IsNullOrEmpty(member.cid_card_pic))
             {
-                pic_image c = _context.pic_image.Single(i => i.image_code == member.cid_card_pic);
-                ViewBag.cidCardPhoto = member.cid_card_pic + c.ref_doc_type;
+                //pic_image c = _context.pic_image.Single(i => i.image_code == member.cid_card_pic);
+                //ViewBag.cidCardPhoto =c.image_name;
+                ViewBag.cidCardPhoto = member.cid_card_pic;
             }
             ViewBag.memberId = id;
             ViewBag.TabNoData = "";
@@ -128,13 +130,15 @@ namespace PPcore.Controllers
                 if ((!string.IsNullOrEmpty(member.mem_photo)) && (member.mem_photo.Substring(0, 1) != "M"))
                 {
                     var fileName = member.mem_photo.Substring(9);
+                    var fileExt = Path.GetExtension(fileName);
                     pic_image m = new pic_image();
-                    m.image_code = "M" + DateTime.Now.ToString("yyMMddhhmmss");
+                    m.image_code = "M" + DateTime.Now.ToString("yyMMddhhmmssfffffff") + fileExt;
                     m.x_status = "Y";
-                    m.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
-                    m.ref_doc_type = Path.GetExtension(fileName);
-                    m.ref_doc_code = "member";
-                    fileName = m.image_code + m.ref_doc_type;
+                    m.image_name = fileName;
+
+                    m.ref_doc_type = "member";
+                    m.ref_doc_code = member.member_code;
+                    fileName = m.image_code;
                     _context.pic_image.Add(m);
                     _context.SaveChanges();
 
@@ -149,13 +153,14 @@ namespace PPcore.Controllers
                 if ((!string.IsNullOrEmpty(member.cid_card_pic)) && (member.cid_card_pic.Substring(0, 1) != "C"))
                 {
                     var fileName = member.cid_card_pic.Substring(9);
+                    var fileExt = Path.GetExtension(fileName);
                     pic_image pic_image = new pic_image();
-                    pic_image.image_code = "C" + DateTime.Now.ToString("yyMMddhhmmss");
+                    pic_image.image_code = "C" + DateTime.Now.ToString("yyMMddhhmmssfffffff") + fileExt;
                     pic_image.x_status = "Y";
-                    pic_image.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
-                    pic_image.ref_doc_type = Path.GetExtension(fileName);
-                    pic_image.ref_doc_code = "cidcard";
-                    fileName = pic_image.image_code + pic_image.ref_doc_type;
+                    pic_image.image_name = fileName;
+                    pic_image.ref_doc_type = "cidcard";
+                    pic_image.ref_doc_code = member.member_code;
+                    fileName = pic_image.image_code;
                     _context.pic_image.Add(pic_image);
                     _context.SaveChanges();
 
@@ -192,14 +197,16 @@ namespace PPcore.Controllers
 
             if (!String.IsNullOrEmpty(member.mem_photo))
             {
-                pic_image m = _context.pic_image.Single(i => i.image_code == member.mem_photo);
-                ViewBag.memPhoto = member.mem_photo + m.ref_doc_type;
+                //pic_image m = _context.pic_image.Single(i => i.image_code == member.mem_photo);
+                //ViewBag.memPhoto = m.image_name;
+                ViewBag.memPhoto = member.mem_photo;
             }
 
             if (!String.IsNullOrEmpty(member.cid_card_pic))
             {
-                pic_image c = _context.pic_image.Single(i => i.image_code == member.cid_card_pic);
-                ViewBag.cidCardPhoto = member.cid_card_pic + c.ref_doc_type;
+                //pic_image c = _context.pic_image.Single(i => i.image_code == member.cid_card_pic);
+                //ViewBag.cidCardPhoto =c.image_name;
+                ViewBag.cidCardPhoto = member.cid_card_pic;
             }
 
             ViewBag.memberId = id;
@@ -229,12 +236,15 @@ namespace PPcore.Controllers
                 if ((!string.IsNullOrEmpty(member.mem_photo)) && (member.mem_photo.Substring(0,1) != "M"))
                 {
                     var fileName = member.mem_photo.Substring(9);
+                    var fileExt = Path.GetExtension(fileName);
                     pic_image m = new pic_image();
-                    m.image_code = "M"+DateTime.Now.ToString("yyMMddhhmmss");
+                    m.image_code = "M" + DateTime.Now.ToString("yyMMddhhmmssfffffff") + fileExt;
                     m.x_status = "Y";
-                    m.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
-                    m.ref_doc_type = Path.GetExtension(fileName);
-                    fileName = m.image_code + m.ref_doc_type;
+                    m.image_name = fileName;
+
+                    m.ref_doc_type = "member";
+                    m.ref_doc_code = member.member_code;
+                    fileName = m.image_code;
                     _context.pic_image.Add(m);
                     _context.SaveChanges();
 
@@ -249,12 +259,14 @@ namespace PPcore.Controllers
                 if ((!string.IsNullOrEmpty(member.cid_card_pic)) && (member.cid_card_pic.Substring(0, 1) != "C"))
                 {
                     var fileName = member.cid_card_pic.Substring(9);
+                    var fileExt = Path.GetExtension(fileName);
                     pic_image pic_image = new pic_image();
-                    pic_image.image_code = "C"+DateTime.Now.ToString("yyMMddhhmmss");
+                    pic_image.image_code = "C" + DateTime.Now.ToString("yyMMddhhmmssfffffff") + fileExt;
                     pic_image.x_status = "Y";
-                    pic_image.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
-                    pic_image.ref_doc_type = Path.GetExtension(fileName);
-                    fileName = pic_image.image_code + pic_image.ref_doc_type;
+                    pic_image.image_name = fileName;
+                    pic_image.ref_doc_type = "cidcard";
+                    pic_image.ref_doc_code = member.member_code;
+                    fileName = pic_image.image_code;
                     _context.pic_image.Add(pic_image);
                     _context.SaveChanges();
 
@@ -280,23 +292,25 @@ namespace PPcore.Controllers
         public async Task<IActionResult> uploadMemPhoto(ICollection<IFormFile> fileMemPhoto)
         {
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
-            var fileName = DateTime.Now.ToString("ddhhmmss") + "_";
+            var filePrefix = DateTime.Now.ToString("ddhhmmss") + "_";
+            var fileName = ""; var fileExt = "";
             foreach (var file in fileMemPhoto)
             {
                 if (file.Length > 0)
                 {
-                    fileName += ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    fileName = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50)) + Path.GetExtension(fileName);
+                    fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    fileExt = Path.GetExtension(fileName);
+                    fileName = fileName.Substring(0, (fileName.Length <= (50 - fileExt.Length) ? fileName.Length : (50 - fileExt.Length))) + fileExt;
                     using (var SourceStream = file.OpenReadStream())
                     {
-                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        using (var fileStream = new FileStream(Path.Combine(uploads, filePrefix + fileName), FileMode.Create))
                         {
                             await SourceStream.CopyToAsync(fileStream);
                         }
                     }
                 }
             }
-            return Json(new { result = "success", uploads = uploads, fileName = fileName });
+            return Json(new { result = "success", uploads = uploads, fileName = filePrefix + fileName });
         }
 
 
@@ -304,23 +318,26 @@ namespace PPcore.Controllers
         public async Task<IActionResult> uploadCidCardPhoto(ICollection<IFormFile> fileCidCardPhoto)
         {
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
-            var fileName = DateTime.Now.ToString("ddhhmmss") + "_";
+            var filePrefix = DateTime.Now.ToString("ddhhmmss") + "_";
+            var fileName = ""; var fileExt = "";
+
             foreach (var file in fileCidCardPhoto)
             {
                 if (file.Length > 0)
                 {
-                    fileName += ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    fileName = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50)) + Path.GetExtension(fileName);
+                    fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    fileExt = Path.GetExtension(fileName);
+                    fileName = fileName.Substring(0, (fileName.Length <= (50 - fileExt.Length) ? fileName.Length : (50 - fileExt.Length))) + fileExt;
                     using (var SourceStream = file.OpenReadStream())
                     {
-                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        using (var fileStream = new FileStream(Path.Combine(uploads, filePrefix + fileName), FileMode.Create))
                         {
                             await SourceStream.CopyToAsync(fileStream);
                         }
                     }
                 }
             }
-            return Json(new { result = "success", uploads = uploads, fileName = fileName });
+            return Json(new { result = "success", uploads = uploads, fileName = filePrefix + fileName });
         }
 
         private void clearImageUpload()
