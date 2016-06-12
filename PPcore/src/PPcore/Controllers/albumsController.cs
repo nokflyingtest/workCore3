@@ -72,6 +72,14 @@ namespace PPcore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("album_code,album_desc,album_name,created_by,album_date,rowversion")] album album)
         {
+            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
+            uploads = Path.Combine(uploads, album.album_code);
+
+            var dest = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+            dest = Path.Combine(dest, album.album_code);
+
+            Directory.Move(uploads, dest);
+
             album.x_status = "Y";
             album.created_by = "Administrator";
 
@@ -145,12 +153,11 @@ namespace PPcore.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadAlbumPhoto(ICollection<IFormFile> file, string albumCode)
         {
-            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_upload").Value);
             uploads = Path.Combine(uploads, albumCode);
             Directory.CreateDirectory(uploads);
 
-            //var fileName = DateTime.Now.ToString("ddhhmmss") + "_";
-            var fileName = ""; var fileExt = "";
+            var fileName = ""; var fileExt = ""; var imageCode = "";
             foreach (var fi in file)
             {
                 if (fi.Length > 0)
@@ -158,14 +165,22 @@ namespace PPcore.Controllers
                     fileName += Microsoft.Net.Http.Headers.ContentDispositionHeaderValue.Parse(fi.ContentDisposition).FileName.Trim('"');
                     fileExt = Path.GetExtension(fileName);
                     fileName = Path.GetFileNameWithoutExtension(fileName);
-                    fileName = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50)) + fileExt;
+                    fileName = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
+                    imageCode = "A" + DateTime.Now.ToString("yyMMddhhmmssffffff");
                     using (var SourceStream = fi.OpenReadStream())
                     {
-                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        using (var fileStream = new FileStream(Path.Combine(uploads, imageCode + fileExt), FileMode.Create))
                         {
                             await SourceStream.CopyToAsync(fileStream);
 
-
+                            pic_image pic_image = new pic_image();
+                            pic_image.image_code = imageCode;
+                            pic_image.x_status = "Y";
+                            pic_image.image_name = fileName;
+                            pic_image.ref_doc_type = fileExt;
+                            pic_image.ref_doc_code = "album";
+                            _context.pic_image.Add(pic_image);
+                            _context.SaveChanges();
                         }
                     }
                 }

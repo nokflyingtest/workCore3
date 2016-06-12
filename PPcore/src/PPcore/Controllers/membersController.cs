@@ -133,6 +133,7 @@ namespace PPcore.Controllers
                     m.x_status = "Y";
                     m.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
                     m.ref_doc_type = Path.GetExtension(fileName);
+                    m.ref_doc_code = "member";
                     fileName = m.image_code + m.ref_doc_type;
                     _context.pic_image.Add(m);
                     _context.SaveChanges();
@@ -153,6 +154,7 @@ namespace PPcore.Controllers
                     pic_image.x_status = "Y";
                     pic_image.image_name = fileName.Substring(0, (fileName.Length <= 50 ? fileName.Length : 50));
                     pic_image.ref_doc_type = Path.GetExtension(fileName);
+                    pic_image.ref_doc_code = "cidcard";
                     fileName = pic_image.image_code + pic_image.ref_doc_type;
                     _context.pic_image.Add(pic_image);
                     _context.SaveChanges();
