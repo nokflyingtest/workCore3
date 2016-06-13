@@ -18,6 +18,7 @@
                     </div>
                     -->
                     <div class="pull-right" style="margin-top:-2px;">
+                        <button id="btnDelete" class="btn btn-default btn-panel-yellow" onclick="deletePhotoMark('@Model.album_code');">&nbsp;<i class="fa fa-eraser" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ลบรูปภาพที่เลือก&nbsp;&nbsp;</button>
                         <button id="btnBack" class="btn btn-default btn-panel-yellow" onclick="location.href='@Url.Action("Index", "albums")'">&nbsp;<i class="fa fa-reply" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;กลับ&nbsp;&nbsp;</button>
                     </div>
                 </div>
@@ -74,6 +75,33 @@
 </div>
 <!-- /.modal -->
 
+
+<!-- Modal Delete -->
+<div id="confirmModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="confirmModalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
+                <h4 class="modal-title" id="confirmModalLabel" style="vertical-align:middle;">ยืนยัน</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="deletePhotoAlbumCode" style="display:none"></div>
+                <div id="deletePhotoImageCode" style="display:none"></div>
+                <div id="confirmMsg" class="col-md-12"></div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-md-4"><button id="btnDeleteConfirm" class="btn btn-danger pull-right" onclick="deletePhotoConfirm();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ยืนยัน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <button id="albumDeleteCancel" class="btn btn-default" data-dismiss="modal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal Delete -->
+
     @section Scripts {
 
         <script>
@@ -103,12 +131,13 @@
                         if (resp != "") {
                             resp = JSON.parse(resp); 
                             for (var i = 0; i < resp.length; i++) {
-                                var imgblock = '<div class="img-thumbnail" style="height:300px;width:250px;margin-top:10px;margin-left:15px;margin-right:15px;">';
-
+                                var imgblock = '<div id="' + resp[i].image_code + '" class="img-thumbnail" style="height:300px;width:250px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                                var idIsMark = "ismark" + resp[i].image_code; //var idImageCode = "ic" + resp[i].image_code;
+                                imgblock += '<div id="' + idIsMark + '" style="display:none">0</div><div id="imc" style="display:none">'+resp[i].image_code+'</div>';
                                 imgblock += '<div class="row" style="position:relative;">&nbsp;<br/>&nbsp;';
                                 var idMark = "mark" + resp[i].image_code;
                                 imgblock += '<div class="col-xs-6" style="position:absolute;top:0px;left:10px;"><div class="photo-mark" id="' + idMark + '" aria-hidden="true" style="font-size:25px;" onclick="markPhoto(\'' + resp[i].image_code + '\');"><i class="fa fa-square-o" aria-hidden="true"></i></div></div>';
-                                imgblock += '<div class="col-xs-6" style="position:absolute;top:-2px;left:210px;"><div class="photo-delete" aria-hidden="true" style="font-size:25px;" onclick="deletePhoto(\'' + resp[i].image_code + '\');"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
+                                imgblock += '<div class="col-xs-6" style="position:absolute;top:-2px;left:210px;"><div class="photo-delete" aria-hidden="true" style="font-size:25px;" onclick="deletePhoto(\'' + resp[i].albumCode + '\',\'' + resp[i].image_code + '\');"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
                                 imgblock += '</div>';
                                 imgblock += '<img class="img-responsive center-block" style="height:210px" src="/' + resp[i].filePath + '" />';
                                 var desc = "";
@@ -118,8 +147,11 @@
                                     } else { desc = resp[i].image_desc; }
                                 } else { desc = "&nbsp;"; }
 
-                                var idSave = "desc" + resp[i].image_code;
-                                imgblock += '<div id="' + idSave + '" class="btn btn-default center-block btn-photo-blue" style="margin-top:5px;width:100%" onclick="changeDesc(\'' + resp[i].image_code + '\',\'' + resp[i].image_desc + '\');">' + desc + '</div>';
+                                var idDesc2 = "desc2" + resp[i].image_code;
+                                imgblock += '<div id="' + idDesc2 + '" style="display:none">' + resp[i].image_desc + '</div>';
+                                var idDesc = "desc" + resp[i].image_code;
+                                imgblock += '<div id="' + idDesc + '" class="btn btn-default center-block btn-photo-blue" style="margin-top:5px;width:100%" onclick="changeDesc(\'' + resp[i].image_code + '\');">' + desc + '</div>';
+
 
                                 imgblock += '</div>';
 
@@ -137,13 +169,16 @@
             function dateDefault() {
                 if ($("#album_date").val() == "") { $("#album_date").datepicker("setDate", new Date()); }
             }
-            function changeDesc(imageCode, imageDesc) {
+            function changeDesc(imageCode) {
                 $('#changeDescImageCode').val(imageCode);
+                var d2 = "desc2" + imageCode;
+                var imageDesc = $("div[id='" + d2 + "']").text();
                 $('#changeDescText').val(imageDesc);
                 $('#changeDescModal').modal({ backdrop: 'static', keyboard: false });
             }
             function changeDescSave() {
                 var d = "desc" + $('#changeDescImageCode').val();
+                var d2 = "desc2" + $('#changeDescImageCode').val();
                 $.ajax({
                     async: false,
                     type: "GET",
@@ -155,18 +190,98 @@
                                 desc = resp.imageDesc.substring(0, 25) + '...';
                             } else { desc = resp.imageDesc; }
                             $("div[id='" + d + "']").text(desc);
+                            $("div[id='" + d2 + "']").text(resp.imageDesc);
                         }
                     }
                 });
                 $('#changeDescModal').modal('toggle');
             }
             function markPhoto(imageCode) {
-                var m = "mark" + imageCode
-                $("div[id='" + m + "']").html('<i class="fa fa-check-square-o" style="color:red;" aria-hidden="true"></i>');
+                var im = "ismark" + imageCode; var m = "mark" + imageCode;
+                if ($("div[id='" + im + "']").text() == 0) {
+                    $("div[id='" + m + "']").html('<i class="fa fa-check-square-o" style="color:red;" aria-hidden="true"></i>');
+                    $("div[id='" + im + "']").text(1);
+                } else {
+                    $("div[id='" + m + "']").html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+                    $("div[id='" + im + "']").text(0);
+                }
             }
-            function deletePhoto(imageCode) {
-                alert(imageCode);
+            function markAllPhoto() {
+                if ($("#isMarkAll").text() == 0) {
+                    $("#markAllPhoto").html('<i class="fa fa-check-square-o" style="color:red;" aria-hidden="true"></i>');
+                    var m = ""; var idIsMark = "";
+                    $('#albumPanel > div').each(function () {
+                        var m = "mark" + this.id;
+                        $("div[id='" + m + "']").html('<i class="fa fa-check-square-o" style="color:red;" aria-hidden="true"></i>');
+                        idIsMark = "ismark" + this.id;
+                        $("div[id='" + idIsMark + "']").text(1);
+                    });
+                    $('#isMarkAll').text(1);
+                } else {
+                    $("#markAllPhoto").html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+                    var m = ""; var idIsMark = "";
+                    $('#albumPanel > div').each(function () {
+                        var m = "mark" + this.id;
+                        $("div[id='" + m + "']").html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+                        idIsMark = "ismark" + this.id;
+                        $("div[id='" + idIsMark + "']").text(0);
+                    });
+                    $("#isMarkAll").text(0);
+                }
+            }
+            function deletePhoto(albumCode, imageCode) {
+                $('#deletePhotoAlbumCode').text(albumCode);
+                $('#deletePhotoImageCode').text(imageCode);
+                $('#confirmModalLabel').text('ยืนยันการลบรูปภาพ');
+                $('#confirmMsg').text('กรุณายืนยันการลบรูปภาพ');
+                $('#btnDeleteConfirm').prop('onclick', null).off('click');
+                $('#btnDeleteConfirm').on('click', function () { deletePhotoConfirm(); });
+                $('#confirmModal').modal({ backdrop: 'static', keyboard: false });
+            }
+            function deletePhotoConfirm() {
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "/albums/DeletePhoto?albumCode=" + $('#deletePhotoAlbumCode').text() + "&imageCode=" + $('#deletePhotoImageCode').text(),
+                    success: function (resp) {
+                        if (resp != "") {
+                            $("div[id='" + resp.imageCode + "']").remove();
+                        }
+                    }
+                });
+                $('#confirmModal').modal('toggle');
+            }
+            function deletePhotoMark(albumCode) {
+                $('#deletePhotoAlbumCode').text(albumCode);
+                $('#confirmModalLabel').text('ยืนยันการลบรูปภาพที่เลือก');
+                $('#confirmMsg').text('กรุณายืนยันการลบรูปภาพที่เลือกทั้งหมด');
+                $('#btnDeleteConfirm').prop('onclick',null).off('click');
+                $('#btnDeleteConfirm').on('click', function () { deletePhotoMarkConfirm(); });
+                $('#confirmModal').modal({ backdrop: 'static', keyboard: false });
 
+            }
+            function deletePhotoMarkConfirm() {
+                var idIsMark = ""; var isMark = "";
+                $('#albumPanel > div').each(function () {
+                    idIsMark = "ismark" + this.id;
+                    isMark = $("div[id='" + idIsMark + "']").text();
+                    if (isMark == 1) {
+
+                        $.ajax({
+                            async: false,
+                            type: "GET",
+                            url: "/albums/DeletePhoto?albumCode=" + $('#deletePhotoAlbumCode').text() + "&imageCode=" + this.id,
+                            success: function (resp) {
+                                if (resp != "") {
+                                    $("div[id='" + resp.imageCode + "']").remove();
+                                }
+                            }
+                        });
+
+
+                    }
+                });
+                $('#confirmModal').modal('toggle');
             }
         </script>
     }

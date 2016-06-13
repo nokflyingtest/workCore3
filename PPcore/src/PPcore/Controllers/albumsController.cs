@@ -434,7 +434,7 @@ namespace PPcore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SharePhoto(string albumCode, string imageCode, string fileName)
+        public async Task<IActionResult> SharePhoto(string albumCode, string imageCode, string imageDesc, string fileName)
         {
             var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
             uploads = Path.Combine(uploads, albumCode);
@@ -462,7 +462,7 @@ namespace PPcore.Controllers
             {
                 client.BaseAddress = new Uri("https://graph.facebook.com");
                 var form = new MultipartFormDataContent();
-                form.Add(new StringContent(fileName), "message");
+                form.Add(new StringContent(imageDesc), "message");
                 var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(uploads));
                 fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("source")
                 {
@@ -568,6 +568,21 @@ namespace PPcore.Controllers
         
             _context.SaveChanges();
             return Json(new { result = "success", imageDesc = imageDesc });
+        }
+
+        [HttpGet]
+        public IActionResult DeletePhoto(string albumCode, string imageCode)
+        {
+            pic_image pi = _context.pic_image.SingleOrDefault(p => p.image_code == imageCode);
+            _context.Remove(pi);
+            _context.SaveChanges();
+
+            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+            uploads = Path.Combine(uploads, albumCode);
+            uploads = Path.Combine(uploads, imageCode);
+            System.IO.File.Delete(uploads);
+
+            return Json(new { result = "success", imageCode = imageCode });
         }
     }
 
