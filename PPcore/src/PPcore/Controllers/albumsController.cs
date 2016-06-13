@@ -486,7 +486,7 @@ namespace PPcore.Controllers
             var pageId = _configuration.GetSection("facebook").GetSection("PageID").Value;
 
             string resp = "";
-            string resp2 = "";
+            //string resp2 = "";
 
             using (var client = new HttpClient())
             {
@@ -498,6 +498,9 @@ namespace PPcore.Controllers
                 var result = client.PostAsync("/v2.6/" + pageId + "/albums?access_token=" + accessToken, content).Result;
                 resp = result.Content.ReadAsStringAsync().Result;
             }
+            return Content(resp);
+
+            /**
             List<photo> p = new List<photo>();
             if (!String.IsNullOrEmpty(resp))
             {
@@ -540,6 +543,43 @@ namespace PPcore.Controllers
             }
             string pjson = JsonConvert.SerializeObject(p);
             return Json(pjson);
+            **/
+
+        }
+        [HttpGet]
+        public IActionResult SharePhotoToAlbum(string albumId, string albumCode, string imageCode, string imageDesc)
+        {
+            var appId = _configuration.GetSection("facebook").GetSection("AppId").Value;
+            var appSecret = _configuration.GetSection("facebook").GetSection("AppSecret").Value;
+            var accessToken = _configuration.GetSection("facebook").GetSection("AccessToken").Value;
+            var pageId = _configuration.GetSection("facebook").GetSection("PageID").Value;
+
+            string resp = "";
+
+            var uploads = Path.Combine(_env.WebRootPath, _configuration.GetSection("Paths").GetSection("images_album").Value);
+            uploads = Path.Combine(uploads, albumCode);
+            uploads = Path.Combine(uploads, imageCode);
+
+            string fiN; string fiP;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://graph.facebook.com");
+
+                    fiN = imageCode;
+                    fiP = uploads;
+
+                    var form = new MultipartFormDataContent();
+                    form.Add(new StringContent(imageDesc), "message");
+                    var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(fiP));
+                    fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("source")
+                    {
+                        FileName = imageCode
+                    };
+                    form.Add(fileContent);
+                    var result = client.PostAsync("/v2.6/" + albumId + "/photos?access_token=" + accessToken, form).Result;
+                    resp = result.Content.ReadAsStringAsync().Result;                    
+            }
+            return Json(new { albumCode = albumCode, imageCode = imageCode });
         }
 
         private void clearImageUpload(string albumCode)
