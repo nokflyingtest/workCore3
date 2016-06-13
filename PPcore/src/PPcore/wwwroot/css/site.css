@@ -448,3 +448,19 @@ input[data-val-required] {
   background-color: #093D6A;
   border-color: #093D6A;
 }
+.photo-delete {
+    color:grey;
+    cursor: pointer;
+    cursor: hand;
+}
+.photo-delete:hover {
+    color:#FFC000;
+}
+.photo-mark {
+    color:grey;
+    cursor: pointer;
+    cursor: hand;
+}
+.photo-mark:hover {
+    color:#FFC000;
+}

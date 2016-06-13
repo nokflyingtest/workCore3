@@ -247,6 +247,7 @@ namespace PPcore.Controllers
                     fiN = pImage.image_code;
                     fiP = Path.Combine(albumCode, fiN);
                     fiP = Path.Combine(_configuration.GetSection("Paths").GetSection("images_album").Value, fiP);
+                    if (pImage.image_desc == null) { pImage.image_desc = ""; }
                     ph.Add(new photo { albumCode = albumCode, image_code = pImage.image_code, image_desc = pImage.image_desc, fileName = fiN, filePath = fiP, albumName = abName, albumDesc = abDesc });
                 }
                 string pjson = JsonConvert.SerializeObject(ph);
