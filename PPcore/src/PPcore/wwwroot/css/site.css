@@ -385,6 +385,11 @@ width: 100% !important;
     top:25%;
     outline: none;
 }
+.modalForm2 {
+    top:25%;
+    outline: none;
+    margin-left: 16%;
+}
 
 input[data-val-required] {
     border:1px solid #ff8383;

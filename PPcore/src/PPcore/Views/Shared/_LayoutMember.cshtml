@@ -316,16 +316,75 @@
                 setDataTablesSimple();
             });
         }
-        function mem_productCreate(memberId) {
+        function mem_productDisplay(memberId) {
             $.ajax({
                 type: 'get', url: '@Url.Action("ListProduct", "mem_product")' + '?memberId=' + memberId,
             }).done(function (resp) {
                 $('#mem_productModalLabel').text('เลือกผลิตผลที่ต้องการเพิ่ม');
                 $('#mem_productModalRenderBody').html(resp);
-                setDataTables($('#dataTablesListProduct'));
+                var table = setListProductTable($('#dataTablesListProduct'));
+                $('#product_type').on('change', function () {
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("SelectBy", "products")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val(),
+                    }).done(function (resp) {
+                        if (resp != "") {
+                            resp = JSON.parse(resp); console.log(resp);
+                            if (!jQuery.isEmptyObject(resp)) {
+                                table.clear().draw();
+                                for (var i in resp) {
+                                    table.row.add([resp[i].rec_no, resp[i].product_code, resp[i].product_desc, '<div id="btnS' + resp[i].product_code + '"><div class="btn btn-xs btn-default btn-panel-yellow" onclick="mem_productSelect(' + resp[i].product_code + ')">&nbsp;<i class="fa fa-plus-circle" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;เลือก&nbsp;&nbsp;</div></div>']);
+                                }
+                                table.draw();
+                            } else {
+                                table.clear().draw();
+                            }
+                        } else {
+                            table.clear().draw();
+                        }
+                    });
+                });
+                $('#product_group').on('change', function () {
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#product_group').val(),
+                    }).done(function (resp) {
+                        if (resp != "") {
+                            $('#product_type').empty();
+                            $('#product_type').append(resp);
+                            $('#product_type').trigger("change");
+                        } else {
+                            $('#product_type').empty();
+                        }
+                    });
+                });
+                $('#product_group').trigger("change");
                 $('#mem_productModal').modal({ backdrop: 'static', keyboard: false });
             });
-            
+
+        }
+        function mem_productSearch() {
+            console.log('mem_productSearch');
+        
+        }
+        function mem_productSelect(productCode) {
+            var id = "btnS" + productCode;
+            //var oldV = $("div[id='" + id + "']").text();
+            var oldV = $('#' + id).html();
+            $('#' + id).html('<i class="fa fa-spin fa-refresh" aria-hidden="true" style="color:#093D6A;"></i>');
+
+            $.ajax({
+                type: 'get', url: '@Url.Action("AddProduct", "mem_product")' + '?memberId=@ViewBag.memberId&productCode=' + productCode,
+            }).done(function (resp) {
+                console.log(resp);
+                if (resp.result == "success") {
+                    var table = $('#dataTablesSimple').DataTable();
+                    table.row.add([resp.rec_no, resp.mem_product_id, resp.product_group_desc, resp.product_type_desc, resp.product_desc]);
+                    table.draw();
+                } else {
+
+                }
+                console.log('result ' + resp.result);
+                setTimeout(function () { $('#' + id).html(oldV); }, 2000);
+            });
         }
         function mem_productCreateSelect(memberId) {
             $('#mem_productCreateModal').modal({ backdrop: 'static', keyboard: false });
@@ -336,7 +395,6 @@
             $.ajax({
                 type: 'get', url: '@Url.Action("ListTabNoData", "members", new { memberId = @ViewBag.memberId })',
             }).done(function (resp) {
-                console.log('resp ' + resp);
                 resp = JSON.parse(resp);
                 for (i = 0; i < resp.length; i++) {
                     $('#' + resp[i].name).addClass('tabNoData');

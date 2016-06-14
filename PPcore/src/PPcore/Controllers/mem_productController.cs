@@ -42,6 +42,8 @@ namespace PPcore.Controllers
         // GET: mem_product/ListProduct
         public IActionResult ListProduct(string memberId)
         {
+            ViewBag.product_group = new SelectList(_context.product_group.OrderBy(p => p.product_group_desc), "product_group_code", "product_group_desc", "1  ");
+
             List<ViewModels.mem_product.mem_productViewModel> mem_productViewModels = new List<ViewModels.mem_product.mem_productViewModel>();
             var member = _context.member.Single(m => m.id == new Guid(memberId));
             var mem_products = _context.mem_product.Where(m => m.member_code == member.member_code).OrderBy(m => m.rec_no).ToList();
@@ -60,13 +62,43 @@ namespace PPcore.Controllers
             return View(mem_productViewModels);
         }
 
-        // GET: mem_product/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: mem_product/AddProduct
+        public IActionResult AddProduct(string memberId, int productCode)
         {
-            if (id == null)
+            var m = _context.member.SingleOrDefault(mb => mb.id == new Guid(memberId));
+
+            var mpro = _context.mem_product.Where(mpr => (mpr.member_code == m.member_code) && (mpr.product_code == productCode)).Count();
+
+            if (mpro == 0)
             {
-                return NotFound();
+                var pd = _context.product.SingleOrDefault(pdt => pdt.product_code == productCode);
+                var pgrp = _context.product_group.SingleOrDefault(pg => pg.product_group_code == pd.product_group_code);
+                var ptyp = _context.product_type.SingleOrDefault(pt => (pt.product_type_code == pd.product_type_code) && (pt.product_group_code == pd.product_group_code));
+                mem_product mp = new mem_product();
+                mp.member_code = m.member_code;
+                mp.product_code = productCode;
+                mp.x_status = "Y";
+
+                _context.Add(mp);
+                _context.SaveChanges();
+
+                var mpCount = _context.mem_product.Where(mj => (mj.member_code == m.member_code)).Count();
+
+                return Json(new { result = "success", rec_no = mpCount, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });
             }
+            else
+            {
+                return Json(new { result = "duplicate" });
+            }
+        }
+
+        // GET: mem_product/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
             var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
             if (mem_product == null)
@@ -100,12 +132,12 @@ namespace PPcore.Controllers
         }
 
         // GET: mem_product/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
             var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
             if (mem_product == null)
@@ -120,7 +152,7 @@ namespace PPcore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("product_code,member_code,grow_area,id,rowversion,x_log,x_note,x_status")] mem_product mem_product)
+        public async Task<IActionResult> Edit(int id, [Bind("product_code,member_code,grow_area,id,rowversion,x_log,x_note,x_status")] mem_product mem_product)
         {
             if (id != mem_product.product_code)
             {
@@ -151,12 +183,12 @@ namespace PPcore.Controllers
         }
 
         // GET: mem_product/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
             var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
             if (mem_product == null)
@@ -170,7 +202,7 @@ namespace PPcore.Controllers
         // POST: mem_product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
             _context.mem_product.Remove(mem_product);
@@ -178,7 +210,7 @@ namespace PPcore.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool mem_productExists(string id)
+        private bool mem_productExists(int id)
         {
             return _context.mem_product.Any(e => e.product_code == id);
         }

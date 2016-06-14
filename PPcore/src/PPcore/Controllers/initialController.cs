@@ -825,9 +825,22 @@ _context.Database.ExecuteSqlCommand("INSERT[ini_list_zip] ([province_code], [cou
             guid = Guid.NewGuid().ToString();
             memberCode = "3000011111333";
             _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[member] ([member_code], [fname], [lname], [sex], [nationality], [mem_photo], [cid_type], [cid_card], [cid_card_pic], [birthdate], [current_age], [religion], [place_name], [marry_status], [h_no], [lot_no], [village], [building], [floor], [room], [lane], [street], [subdistrict_code], [district_code], [province_code], [country_code], [zip_code], [mstatus_code], [mem_type_code], [mem_group_code], [mlevel_code], [zone], [latitude], [longitude], [texta_address], [textb_address], [textc_address], [tel], [mobile], [fax], [social_app_data], [email], [parent_code], [x_status], [x_note], [x_log], [id]) VALUES(N'" + memberCode + "', N'ปิติ', N'ใจสว่าง', 'M', NULL, NULL, NULL, N'" + memberCode + "', NULL, N'1990-05-04 00:00:00', 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'G  ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, N'Y', NULL, NULL, N'" + guid + "')");
+
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_group] ([product_group_code], [product_group_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'ปลูกพืช', N'Y', NULL, NULL, N'8a20710a-2152-48fb-93ae-218347593386')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_group] ([product_group_code], [product_group_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'2  ', N'เลี้ยงสัตว์', N'Y', NULL, NULL, N'82583c56-71c8-4caa-a1b5-aad4c067ff63')");
+
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_type] ([product_group_code], [product_type_code], [product_type_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'1  ', N'ปลูกข้าว', N'Y', NULL, NULL, N'7b424762-fb7f-4d1a-8c74-74404ddc5106')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_type] ([product_group_code], [product_type_code], [product_type_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'2  ', N'1  ', N'เลี้ยงปลา', N'Y', NULL, NULL, N'ff208832-e813-4888-8c9d-3a3f94716047')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_type] ([product_group_code], [product_type_code], [product_type_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'2  ', N'ปลูกผัก', N'Y', NULL, NULL, N'93792b14-51f0-4eff-ac4c-f2f03c4f8eb3')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product_type] ([product_group_code], [product_type_code], [product_type_desc], [x_status], [x_note], [x_log], [id]) VALUES(N'2  ', N'2  ', N'เลี้ยงวัว', N'Y', NULL, NULL, N'201928ea-5f53-4aca-bbc6-f05f6c453bd9')");
+
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product] ([product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'1  ', N'ข้าวเหนียว', 1, N'Y', NULL, NULL, N'97056ba7-0d77-468d-a655-397f2de61dd1')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product] ([product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'1  ', N'ข้าวกล้อง', 2, N'Y', NULL, NULL, N'4dd8a107-fcc4-4ee9-a5c9-aaf83065c93e')");
+            _context.Database.ExecuteSqlCommand("INSERT INTO[dbo].[product] ([product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id]) VALUES(N'1  ', N'1  ', N'ข้าวหอมมะลิ', 3, N'Y', NULL, NULL, N'3db3ceb7-26ec-4b67-a042-d24a3197f8ed')");
+
         }
 
-        private void deleteData()
+    private void deleteData()
         {
             _context.Database.ExecuteSqlCommand("EXEC sp_MSForEachTable 'DELETE FROM ?'");
         }

@@ -33,7 +33,7 @@ go
 /* Table: product                                               */
 /*==============================================================*/
 create table product (
-   product_code         char(3)              not null,
+   product_code         int                  not null IDENTITY(1,1),
    product_type_code    char(3)              null,
    product_group_code   char(3)              null,
    product_desc         nvarchar(100)        not null,
@@ -52,7 +52,7 @@ go
 /*==============================================================*/
 create table mem_product (
    member_code          varchar(30)          not null,
-   product_code         char(3)              not null,
+   product_code         int                  not null,
    grow_area            decimal(7,2)         null,
    rec_no               int                  not null,
    x_status             char(1)              null,
