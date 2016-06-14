@@ -320,7 +320,7 @@
             $.ajax({
                 type: 'get', url: '@Url.Action("ListProduct", "mem_product")' + '?memberId=' + memberId,
             }).done(function (resp) {
-                $('#mem_productModalLabel').text('เลือกผลิตผลที่ต้องการเพิ่ม');
+                //$('#mem_productModalLabel').text('เลือกผลิตผลที่ต้องการเพิ่ม');
                 $('#mem_productModalRenderBody').html(resp);
                 var table = setListProductTable($('#dataTablesListProduct'));
                 $('#product_type').on('change', function () {
@@ -386,8 +386,9 @@
                 setTimeout(function () { $('#' + id).html(oldV); }, 2000);
             });
         }
-        function mem_productCreateSelect(memberId) {
-            $('#mem_productCreateModal').modal({ backdrop: 'static', keyboard: false });
+        function mem_productAddProduct(memberId) {
+            $('#productAddModalLabel').text('เพิ่มผลิตผลที่ต้องการ');
+            $('#productAddModal').modal({ backdrop: 'static', keyboard: false });
 
         }
 

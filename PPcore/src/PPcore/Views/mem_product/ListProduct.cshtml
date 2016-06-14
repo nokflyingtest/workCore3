@@ -7,7 +7,7 @@
     <div class="panel-heading">
         <div class="pull-left" style="margin-top:-2px;">
             <form class="form-inline" role="form">
-                <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_productCreateSelect('@ViewBag.memberId')">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_productAddProduct('@ViewBag.memberId')">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
                 <select id="product_group" class="form-control" asp-items="@ViewBag.product_group" style="width:150px;"></select>
                 <select id="product_type" class="form-control" style="width:150px;"></select>
             </form>
