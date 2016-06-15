@@ -2,7 +2,7 @@
 /* Table: product_group                                         */
 /*==============================================================*/
 create table product_group (
-   product_group_code   char(3)              not null,
+   product_group_code   varchar(30)          not null,
    product_group_desc   nvarchar(100)        not null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
@@ -17,8 +17,8 @@ go
 /* Table: product_type                                          */
 /*==============================================================*/
 create table product_type (
-   product_group_code   char(3)              not null,
-   product_type_code    char(3)              not null,
+   product_group_code   varchar(30)          not null,
+   product_type_code    varchar(30)          not null,
    product_type_desc    nvarchar(100)        not null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
@@ -33,9 +33,9 @@ go
 /* Table: product                                               */
 /*==============================================================*/
 create table product (
-   product_code         int                  not null IDENTITY(1,1),
-   product_type_code    char(3)              null,
-   product_group_code   char(3)              null,
+   product_code         varchar(30)          not null,
+   product_type_code    varchar(30)          not null,
+   product_group_code   varchar(30)          not null,
    product_desc         nvarchar(100)        not null,
    rec_no               int                  not null,
    x_status             char(1)              null,
@@ -52,7 +52,7 @@ go
 /*==============================================================*/
 create table mem_product (
    member_code          varchar(30)          not null,
-   product_code         int                  not null,
+   product_code         varchar(30)          not null,
    grow_area            decimal(7,2)         null,
    rec_no               int                  not null,
    x_status             char(1)              null,

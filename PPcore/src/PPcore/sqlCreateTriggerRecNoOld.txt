@@ -8,10 +8,12 @@ CREATE TRIGGER product_Insert ON product
 INSTEAD OF INSERT 
 AS
 BEGIN
+	DECLARE @maxc int;
 	DECLARE @maxi int;
 	SELECT TOP 1 @maxi = rec_no FROM product WHERE product_type_code = (SELECT product_type_code FROM Inserted) ORDER BY rec_no DESC;
+	SELECT TOP 1 @maxc = product_code FROM product ORDER BY product_code DESC;
 	INSERT INTO product ([product_code], [product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id])
-	SELECT [product_code], [product_type_code], [product_group_code], [product_desc], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
+	SELECT IsNull(@maxc, 0 ) + 1, [product_type_code], [product_group_code], [product_desc], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
 	FROM Inserted;
 END;
 

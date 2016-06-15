@@ -17,7 +17,10 @@ namespace PPcore.Models
                 entity.HasKey(e => e.product_code)
                     .HasName("pk_product");
 
+                entity.Property(e => e.product_code).HasColumnType("varchar(30)");
                 //entity.Property(e => e.product_code).HasColumnType("char(3)");
+                //entity.Property(e => e.product_code).UseSqlServerIdentityColumn();
+                //.HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");
 
@@ -44,7 +47,7 @@ namespace PPcore.Models
                 entity.HasKey(e => e.product_group_code)
                     .HasName("pk_product_group");
 
-                entity.Property(e => e.product_group_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_group_code).HasColumnType("varchar(30)");
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");
 
@@ -67,9 +70,9 @@ namespace PPcore.Models
                 entity.HasKey(e => new { e.product_type_code, e.product_group_code })
                     .HasName("pk_product_type");
 
-                entity.Property(e => e.product_type_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_type_code).HasColumnType("varchar(30)");
 
-                entity.Property(e => e.product_group_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_group_code).HasColumnType("varchar(30)");
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");
 
@@ -92,7 +95,7 @@ namespace PPcore.Models
                 entity.HasKey(e => new { e.product_code, e.member_code })
                     .HasName("pk_mem_product");
 
-                //entity.Property(e => e.product_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_code).HasColumnType("varchar(30)");
 
                 entity.Property(e => e.member_code).HasColumnType("varchar(30)");
 

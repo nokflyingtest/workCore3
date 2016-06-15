@@ -40,7 +40,7 @@ namespace PPcore.Controllers
         }
 
         // GET: mem_product/ListProduct
-        public IActionResult ListProduct(string memberId)
+        public IActionResult DetailsAsList(string memberId)
         {
             ViewBag.product_group = new SelectList(_context.product_group.OrderBy(p => p.product_group_desc), "product_group_code", "product_group_desc", "1  ");
 
@@ -62,8 +62,9 @@ namespace PPcore.Controllers
             return View(mem_productViewModels);
         }
 
-        // GET: mem_product/AddProduct
-        public IActionResult AddProduct(string memberId, int productCode)
+        //AddProduct
+        [HttpGet]
+        public IActionResult Create(string memberId, string productCode)
         {
             var m = _context.member.SingleOrDefault(mb => mb.id == new Guid(memberId));
 
@@ -90,129 +91,6 @@ namespace PPcore.Controllers
             {
                 return Json(new { result = "duplicate" });
             }
-        }
-
-        // GET: mem_product/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
-            if (mem_product == null)
-            {
-                return NotFound();
-            }
-
-            return View(mem_product);
-        }
-
-        // GET: mem_product/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: mem_product/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("product_code,member_code,grow_area,id,rowversion,x_log,x_note,x_status")] mem_product mem_product)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(mem_product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(mem_product);
-        }
-
-        // GET: mem_product/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
-            if (mem_product == null)
-            {
-                return NotFound();
-            }
-            return View(mem_product);
-        }
-
-        // POST: mem_product/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("product_code,member_code,grow_area,id,rowversion,x_log,x_note,x_status")] mem_product mem_product)
-        {
-            if (id != mem_product.product_code)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(mem_product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!mem_productExists(mem_product.product_code))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(mem_product);
-        }
-
-        // GET: mem_product/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
-            if (mem_product == null)
-            {
-                return NotFound();
-            }
-
-            return View(mem_product);
-        }
-
-        // POST: mem_product/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var mem_product = await _context.mem_product.SingleOrDefaultAsync(m => m.product_code == id);
-            _context.mem_product.Remove(mem_product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool mem_productExists(int id)
-        {
-            return _context.mem_product.Any(e => e.product_code == id);
         }
     }
 }

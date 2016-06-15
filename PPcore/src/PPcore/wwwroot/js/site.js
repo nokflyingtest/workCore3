@@ -100,10 +100,12 @@ function setDataTables(tableId) {
     return tableMember;
 }
 
-function setListProductTable(tableId) {
+function setProductDetailsAsListTable(tableId) {
     var tableMember = tableId.DataTable({
         responsive: true,
         "ordering": false,
+        "bLengthChange": false,
+        "pageLength": 5,
         "oLanguage": {
             "sLengthMenu": "แสดงผล _MENU_ รายการ/หน้า",
             "sZeroRecords": "ไม่เจอข้อมูลที่ค้นหา",

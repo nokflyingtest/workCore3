@@ -7,6 +7,7 @@ namespace PPcoreDBPrepare.Models
     {
         public string image_code { get; set; }
         public string image_name { get; set; }
+        public string image_desc { get; set; }
         public string ref_doc_type { get; set; }
         public string ref_doc_code { get; set; }
         public string image_file { get; set; }

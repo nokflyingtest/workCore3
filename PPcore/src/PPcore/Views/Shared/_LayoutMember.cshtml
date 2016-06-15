@@ -78,7 +78,7 @@
                                 <a id="mem_worklist" onclick="location.href='@Url.Action("Index", "mem_worklist", new {memberId=ViewBag.memberId})'" >ข้อมูลสถานที่ทำงาน<br />และประวัติการทำงาน</a>
                             </li>
                             <li>
-                                <a id="mem_product" onclick="mem_productView('@ViewBag.memberId');" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>
+                                <a id="mem_product" onclick="mem_productIndex('@ViewBag.memberId');" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>
                             </li>
                         </ul>
                     }
@@ -308,7 +308,7 @@
             }, 300);
         }
 
-        function mem_productView(memberId) {
+        function mem_productIndex(memberId) {
             $.ajax({
                 type: 'get', url: '@Url.Action("Index", "mem_product")'+'?memberId=' + memberId,
             }).done(function (resp) {
@@ -316,16 +316,16 @@
                 setDataTablesSimple();
             });
         }
-        function mem_productDisplay(memberId) {
+        function mem_productProductDetailsAsList(memberId) {
             $.ajax({
-                type: 'get', url: '@Url.Action("ListProduct", "mem_product")' + '?memberId=' + memberId,
+                type: 'get', url: '@Url.Action("DetailsAsList", "product")' + '?memberId=' + memberId,
             }).done(function (resp) {
-                //$('#mem_productModalLabel').text('เลือกผลิตผลที่ต้องการเพิ่ม');
-                $('#mem_productModalRenderBody').html(resp);
-                var table = setListProductTable($('#dataTablesListProduct'));
+                $('#mem_productProductDetailsAsListModalRenderBody').html(resp);
+                var table = setProductDetailsAsListTable($('#dataTablesListProduct'));
                 $('#product_type').on('change', function () {
+                    var sPattern = $('#searchPattern').val().trim();
                     $.ajax({
-                        type: 'get', url: '@Url.Action("SelectBy", "products")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val(),
+                        type: 'get', url: '@Url.Action("DetailsAsList", "product")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val() + '&pattern='+sPattern,
                     }).done(function (resp) {
                         if (resp != "") {
                             resp = JSON.parse(resp); console.log(resp);
@@ -357,13 +357,12 @@
                     });
                 });
                 $('#product_group').trigger("change");
-                $('#mem_productModal').modal({ backdrop: 'static', keyboard: false });
+                $('#mem_productProductDetailsAsListModal').modal({ backdrop: 'static', keyboard: false });
             });
 
         }
         function mem_productSearch() {
-            console.log('mem_productSearch');
-        
+            $('#product_type').trigger("change");
         }
         function mem_productSelect(productCode) {
             var id = "btnS" + productCode;
@@ -374,7 +373,6 @@
             $.ajax({
                 type: 'get', url: '@Url.Action("AddProduct", "mem_product")' + '?memberId=@ViewBag.memberId&productCode=' + productCode,
             }).done(function (resp) {
-                console.log(resp);
                 if (resp.result == "success") {
                     var table = $('#dataTablesSimple').DataTable();
                     table.row.add([resp.rec_no, resp.mem_product_id, resp.product_group_desc, resp.product_type_desc, resp.product_desc]);
@@ -382,16 +380,35 @@
                 } else {
 
                 }
-                console.log('result ' + resp.result);
-                setTimeout(function () { $('#' + id).html(oldV); }, 2000);
+                setTimeout(function () { $('#' + id).html(oldV); }, 1500);
             });
         }
-        function mem_productAddProduct(memberId) {
+        function mem_productProductCreateGet(memberId) {
             $('#productAddModalLabel').text('เพิ่มผลิตผลที่ต้องการ');
+            $('#product_group_code').text($('#product_group').val());
+            $('#product_type_code').text($('#product_type').val());
+            $('#product_desc').val('');
             $('#productAddModal').modal({ backdrop: 'static', keyboard: false });
-
         }
+        function mem_productProductCreatePost(memberId) {
+            var productDesc = $('#product_desc').val().trim();
+            if (productDesc != '') {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("Create", "products")' + '?product_group_code=' + $('#product_group_code').text() + '&product_type_code=' + $('#product_type_code').text() + '&product_desc=' + $('#product_desc').val(),
+                }).done(function (resp) {
+                    console.log(resp);
+                    if (resp != "") {
+                        console.log(resp);
+                        var table = $('#dataTablesListProduct').DataTable();
+                        table.row.add([resp.rec_no, resp.product_code, resp.product_desc, '<div id="btnS' + resp.product_code + '"><div class="btn btn-xs btn-default btn-panel-yellow" onclick="mem_productSelect(' + resp.product_code + ')">&nbsp;<i class="fa fa-plus-circle" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;เลือก&nbsp;&nbsp;</div></div>']);
+                        table.draw();
+                    }
 
+                });
+            }
+
+            $('#productAddModal').modal('hide');
+        }
         function setTabColor() {
             $.ajax({
                 type: 'get', url: '@Url.Action("ListTabNoData", "members", new { memberId = @ViewBag.memberId })',

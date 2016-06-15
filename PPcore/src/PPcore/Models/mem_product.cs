@@ -7,7 +7,7 @@ namespace PPcore.Models
     public partial class mem_product
     {
         public string member_code { get; set; }
-        public int product_code { get; set; }
+        public string product_code { get; set; }
         public decimal? grow_area { get; set; }
         [Display(Name = "ลำดับ")]
         public int rec_no { get; set; }
