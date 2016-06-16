@@ -27,9 +27,9 @@ namespace PPcore.Models
                 entity.Property(e => e.product_desc)
                     .IsRequired().HasColumnType("nvarchar(100)");
 
-                entity.Property(e => e.product_group_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_group_code).HasColumnType("varchar(30)");
 
-                entity.Property(e => e.product_type_code).HasColumnType("char(3)");
+                entity.Property(e => e.product_type_code).HasColumnType("varchar(30)");
 
                 entity.Property(e => e.rowversion)
                     .HasColumnType("timestamp")

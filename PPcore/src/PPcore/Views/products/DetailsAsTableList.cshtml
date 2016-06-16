@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "";
 }
-@model IEnumerable<PPcore.ViewModels.mem_product.mem_productViewModel>
+@model IEnumerable<PPcore.Models.product>
 
 <div class="panel panel-blue">
     <div class="panel-heading">
@@ -16,7 +16,7 @@
             <div class="form-group input-group" style="width:200px;">
                 <input id="searchPattern" type="text" class="form-control" placeholder="คำค้นหา">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="mem_productSearch();">
+                    <button class="btn btn-default" type="button" onclick="mem_productProductSearch();">
                         <i class="fa fa-search"></i>
                     </button>
                 </span>
@@ -29,11 +29,11 @@
             <table class="table table-striped table-bordered table-hover dataTablesMod" id="dataTablesProductDetailsAsTableList">
                 <thead>
                     <tr>
-                        <th class="text-center">@Html.DisplayNameFor(model => model.product.rec_no)</th>
-                        <th class="text-center">@Html.DisplayNameFor(model => model.product.product_code)</th>
+                        <th class="text-center">@Html.DisplayNameFor(model => model.rec_no)</th>
+                        <th class="text-center">@Html.DisplayNameFor(model => model.product_code)</th>
                         @*<th>@Html.DisplayNameFor(model => model.product_group_desc)</th>
                             <th>@Html.DisplayNameFor(model => model.product_type_desc)</th>*@
-                        <th>@Html.DisplayNameFor(model => model.product.product_desc)</th>
+                        <th>@Html.DisplayNameFor(model => model.product_desc)</th>
                         <th>เลือก</th>
                     </tr>
                 </thead>
@@ -41,11 +41,11 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td class="text-center">@Html.DisplayFor(modelItem => item.product.rec_no)</td>
-                            <td class="text-center">@Html.DisplayFor(modelItem => item.product.product_code)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.rec_no)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.product_code)</td>
                             @*<td>@Html.DisplayFor(modelItem => item.product_group_desc)</td>
                                 <td>@Html.DisplayFor(modelItem => item.product_type_desc)</td>*@
-                            <td>@Html.DisplayFor(modelItem => item.product.product_desc)</td>
+                            <td>@Html.DisplayFor(modelItem => item.product_desc)</td>
                             <td></td>
                         </tr>
                     }

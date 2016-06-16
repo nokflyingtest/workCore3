@@ -11,12 +11,14 @@ namespace PPcore.Models
         //[DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "รหัสผลิตผล")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string product_code { get; set; }
         [Display(Name = "ประเภทผลิตผล")]
         public string product_type_code { get; set; }
         [Display(Name = "กลุ่มผลิตผล")]
         public string product_group_code { get; set; }
         [Display(Name = "ผลิตผล")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string product_desc { get; set; }
         [Display(Name = "ลำดับ")]
         public int rec_no { get; set; }

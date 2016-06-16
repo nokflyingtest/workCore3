@@ -9,7 +9,7 @@ INSTEAD OF INSERT
 AS
 BEGIN
 	DECLARE @maxi int;
-	SELECT TOP 1 @maxi = rec_no FROM product WHERE product_type_code = (SELECT product_type_code FROM Inserted) ORDER BY rec_no DESC;
+	SELECT TOP 1 @maxi = rec_no FROM product WHERE product_group_code = (SELECT product_group_code FROM Inserted) and product_type_code = (SELECT product_type_code FROM Inserted) ORDER BY rec_no DESC;
 	INSERT INTO product ([product_code], [product_type_code], [product_group_code], [product_desc], [rec_no], [x_status], [x_note], [x_log], [id])
 	SELECT [product_code], [product_type_code], [product_group_code], [product_desc], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
 	FROM Inserted;

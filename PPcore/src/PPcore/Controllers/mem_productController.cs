@@ -41,28 +41,29 @@ namespace PPcore.Controllers
 
         //AddProduct
         [HttpGet]
-        public IActionResult Create(string memberId, string productCode)
+        public IActionResult Create(string memberId, string productId)
         {
             var m = _context.member.SingleOrDefault(mb => mb.id == new Guid(memberId));
 
-            var mpro = _context.mem_product.Where(mpr => (mpr.member_code == m.member_code) && (mpr.product_code == productCode)).Count();
+            var mpro = _context.mem_product.Where(mpr => (mpr.member_code == m.member_code) && (mpr.id == new Guid(productId))).Count();
 
             if (mpro == 0)
             {
-                var pd = _context.product.SingleOrDefault(pdt => pdt.product_code == productCode);
+                var pd = _context.product.SingleOrDefault(pdt => pdt.id == new Guid(productId));
                 var pgrp = _context.product_group.SingleOrDefault(pg => pg.product_group_code == pd.product_group_code);
                 var ptyp = _context.product_type.SingleOrDefault(pt => (pt.product_type_code == pd.product_type_code) && (pt.product_group_code == pd.product_group_code));
                 mem_product mp = new mem_product();
                 mp.member_code = m.member_code;
-                mp.product_code = productCode;
+                mp.product_code = pd.product_code;
                 mp.x_status = "Y";
 
                 _context.Add(mp);
                 _context.SaveChanges();
 
-                var mpCount = _context.mem_product.Where(mj => (mj.member_code == m.member_code)).Count();
+                //var mpCount = _context.mem_product.Where(mj => (mj.member_code == m.member_code)).Count();
+                var mpMax = _context.mem_product.Where(mj => (mj.member_code == m.member_code)).Max(mj => mj.rec_no);
 
-                return Json(new { result = "success", rec_no = mpCount, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });
+                return Json(new { result = "success", rec_no = mpMax, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });
             }
             else
             {
