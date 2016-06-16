@@ -100,7 +100,7 @@ function setDataTables(tableId) {
     return tableMember;
 }
 
-function setProductDetailsAsListTable(tableId) {
+function setTableProductDetailsAsTableList(tableId) {
     var tableMember = tableId.DataTable({
         responsive: true,
         "ordering": false,
@@ -122,7 +122,7 @@ function setProductDetailsAsListTable(tableId) {
         }, bAutoWidth: false,
         "columnDefs": [
             { "targets": [0], "width": "50", "className": "dt-center" },
-            { "targets": [1], "visible": false, "searchable": false },
+            { "targets": [1], "width": "80", "className": "dt-center" },
             { "targets": [3], "width": "50", "className": "dt-center" }
         ],fixedColumns: true,
         preDrawCallback: function (settings) {

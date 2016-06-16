@@ -39,29 +39,6 @@ namespace PPcore.Controllers
             return View(mem_productViewModels);
         }
 
-        // GET: mem_product/ListProduct
-        public IActionResult DetailsAsList(string memberId)
-        {
-            ViewBag.product_group = new SelectList(_context.product_group.OrderBy(p => p.product_group_desc), "product_group_code", "product_group_desc", "1  ");
-
-            List<ViewModels.mem_product.mem_productViewModel> mem_productViewModels = new List<ViewModels.mem_product.mem_productViewModel>();
-            var member = _context.member.Single(m => m.id == new Guid(memberId));
-            var mem_products = _context.mem_product.Where(m => m.member_code == member.member_code).OrderBy(m => m.rec_no).ToList();
-            foreach (var mp in mem_products)
-            {
-                var mem_productViewModel = new ViewModels.mem_product.mem_productViewModel();
-                mem_productViewModel.mem_product = mp;
-                var product = _context.product.Single(p => p.product_code == mp.product_code);
-                mem_productViewModel.product = product;
-                mem_productViewModel.product_group_desc = _context.product_group.Single(p => p.product_group_code == product.product_group_code).product_group_desc;
-                mem_productViewModel.product_type_desc = _context.product_type.Single(p => (p.product_type_code == product.product_type_code) && (p.product_group_code == product.product_group_code)).product_type_desc;
-                mem_productViewModels.Add(mem_productViewModel);
-            }
-            ViewBag.memberId = memberId;
-            //ViewBag.course_grade = new SelectList(_context.course_grade, "cgrade_code", "cgrade_desc");(x.Body.Scopes.Count > 5) && (x.Foo == "test")
-            return View(mem_productViewModels);
-        }
-
         //AddProduct
         [HttpGet]
         public IActionResult Create(string memberId, string productCode)

@@ -10,6 +10,7 @@ namespace PPcore.Models
         //[Key]
         //[DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "รหัสผลิตผล")]
         public string product_code { get; set; }
         [Display(Name = "ประเภทผลิตผล")]
         public string product_type_code { get; set; }

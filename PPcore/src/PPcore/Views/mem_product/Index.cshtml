@@ -7,7 +7,7 @@
     <div class="panel-heading">
         <div class="pull-left" style="padding-top:5px;">แสดงข้อมูลทั้งหมด</div>
         <div class="pull-right" style="margin-top:-2px;">
-            <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_productProductDetailsAsList('@ViewBag.memberId');">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_productProductDetailsAsTableList('@ViewBag.memberId');">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
             <div id="btnEdit" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;แก้ไข&nbsp;&nbsp;</div>
             <div id="btnDetails" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูล</div>
         </div>
@@ -54,11 +54,11 @@
 </div>
 
 <!-- Modal -->
-<div id="mem_productProductDetailsAsListModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="mem_productProductDetailsAsListModalLabel" aria-hidden="true">
+<div id="mem_productProductDetailsAsTableListModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="mem_productProductDetailsAsTableListModalLabel" aria-hidden="true">
     <div class="modal-lg">
         <div class="modal-content">
             <div class="modal-body container-fluid"> 
-                <div id="mem_productProductDetailsAsListModalRenderBody"></div>
+                <div id="mem_productProductDetailsAsTableListModalRenderBody"></div>
                 <div class="pull-right" style="margin-top:-2px;">
                     <div class="btn btn-default btn-panel-yellow" data-dismiss="modal" aria-hidden="true" >&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
                 </div>
@@ -70,20 +70,20 @@
 <!-- /Modal -->
 
 <!-- Modal -->
-<div id="productAddModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="productAddModalLabel" aria-hidden="true">
+<div id="mem_productProductCreateModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="mem_productProductCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
 
 
 
-            <div id="productAddModalHeader" class="modal-header">
+            <div id="mem_productProductCreateModalHeader" class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
-                <h4 id="productAddModalLabel" class="modal-title" style="vertical-align:middle;"></h4>
+                <h4 id="mem_productProductCreateModalLabel" class="modal-title" style="vertical-align:middle;"></h4>
             </div>
             <div class="modal-body container-fluid">
-                <div id="productAddModalRenderBody">
-                    @{ await Html.RenderPartialAsync("ViewInput", new product()); }
+                <div id="mem_productProductCreateModalRenderBody">
+                     @*@{ await Html.RenderPartialAsync("ViewInput", new product()); }*@
                 </div>
             </div>
 
