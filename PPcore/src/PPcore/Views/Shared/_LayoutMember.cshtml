@@ -48,6 +48,9 @@
                             <li>
                                 <a id="mem_worklist" onclick="location.href='@Url.Action("Index", "mem_worklist", new {memberId=ViewBag.memberId, v = 1})'">ข้อมูลสถานที่ทำงาน<br />และประวัติการทำงาน</a>
                             </li>
+                            <li>
+                                <a id="mem_product" onclick="mem_productIndex('@ViewBag.memberId');" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>
+                            </li>
                         </ul>
                     }
                     else
@@ -155,16 +158,6 @@
                 }
                 $('#btnPrint').show();
             }
-
-            $('#btnPrint').on('click', function () {
-                var url = '@Url.Action("DetailsPdf", "members", new { id = "__id__" })';
-                //window.location.href = url.replace('__id__', data[1]);
-                //var win = window.open(url.replace('__id__', '@ViewBag.memberId'), '_blank');
-                var win = window.open(url.replace('__id__', '@ViewBag.memberId'));
-                win.focus();
-
-                //window.open(url.replace('__id__', '@ViewBag.memberId'), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-            });
 
 
 
@@ -432,7 +425,19 @@
                 }
             });
         }
+        function memberPrint() {
+                var url = '@Url.Action("DetailsPdf", "members", new { id = "__id__" })';
+                //window.location.href = url.replace('__id__', data[1]);
+                //var win = window.open(url.replace('__id__', '@ViewBag.memberId'), '_blank');
+                var win = window.open(url.replace('__id__', '@ViewBag.memberId'));
+                win.focus();
 
+                //window.open(url.replace('__id__', '@ViewBag.memberId'), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+
+
+
+
+        }
     </script>
 }
 
