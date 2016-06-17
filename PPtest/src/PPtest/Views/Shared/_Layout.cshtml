@@ -32,9 +32,11 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-controller="Home" asp-action="DetailsPdf">PDF</a></li>
+                    <li><a asp-controller="Home" asp-action="iTextDetailsPdfTest">iText-PDF Test</a></li>
+                    <li><a asp-controller="Home" asp-action="iTextDetailsPdfIText">iText-PDF iText</a></li>
+                    <li><a asp-controller="Home" asp-action="iTextDetailsPdf">iText-PDF</a></li>
+
+                    <li><a asp-controller="PdfSharpTest" asp-action="TestMigraDoc1">Test1</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
