@@ -8,6 +8,7 @@ using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Hosting;
+using System.Text;
 
 namespace PPtest.Controllers
 {
@@ -49,7 +50,52 @@ namespace PPtest.Controllers
             return View();
         }
 
-        public async Task<IActionResult> iTextDetailsPdf()
+        public IActionResult iTextFontList()
+        {
+            MemoryStream workStream = new MemoryStream();
+            Document document = new Document(PageSize.A4, 25, 25, 50, 30);
+            PdfWriter.GetInstance(document, workStream).CloseStream = false;
+
+
+            int totalfonts = FontFactory.RegisterDirectory("C:\\WINDOWS\\Fonts");
+            StringBuilder sb = new StringBuilder();
+            foreach (string fontname in FontFactory.RegisteredFonts)
+            {
+                sb.Append(fontname + "\n");
+            }
+
+            //Font arial = FontFactory.GetFont("Arial", 28, Color.GRAY);
+            //Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(125, 88, 15));
+            //Font palatino = FontFactory.GetFont(
+            // "palatino linotype italique",
+            //  BaseFont.CP1252,
+            //  BaseFont.EMBEDDED,
+            //  10,
+            //  Font.ITALIC,
+            //  Color.GREEN
+            //  );
+            //Font smallfont = FontFactory.GetFont("Arial", 7);
+            //Font x = FontFactory.GetFont("nina fett");
+            //x.Size = 10;
+            //x.SetStyle("Italic");
+            //x.SetColor(100, 50, 200);
+
+            document.Open();
+
+            document.Add(new Paragraph("All Fonts:\n" + sb.ToString()));
+
+            document.Close();
+
+            byte[] byteInfo = workStream.ToArray();
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+            return new FileStreamResult(workStream, "application/pdf");
+
+
+        }
+
+        public async Task<IActionResult> iTextDetailsHtmlToPdf()
         {
             var htmlString = "";
             var urlString = Request.Scheme + "://" + Request.Host + Url.Action("DetailsPdfSrc", "Home");
@@ -175,7 +221,7 @@ namespace PPtest.Controllers
                     using (var writer = PdfWriter.GetInstance(doc, ms))
                     {
                         doc.Open();
-                        var example_html = @"<p>This <em>is </em><span class=""headline"" style=""text-decoration: underline;"">some</span> <strong>sample <em> text</em></strong><span style=""color: red;"">!!!</span></p>";
+                        //var example_html = @"<p>This <em>is </em><span class=""headline"" style=""text-decoration: underline;"">some</span> <strong>sample <em> text</em></strong><span style=""color: red;"">!!!</span></p>";
                         var example_css = @".headline{font-size:200%}";
                         using (var msCss = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(example_css)))
                         {
@@ -197,7 +243,7 @@ namespace PPtest.Controllers
             //return Content(htmlString);
         }
 
-        public IActionResult iTextDetailsPdfTest()
+        public IActionResult iTextDetailsPdfSample()
         {
             var htmlString = "";
             var urlString = Request.Scheme + "://" + Request.Host + Url.Action("DetailsPdfSrc", "Home");
@@ -306,7 +352,7 @@ namespace PPtest.Controllers
             return Content(htmlString);
         }
 
-        public IActionResult iTextDetailsPdfIText()
+        public IActionResult iTextDetailsPdf()
         {
             MemoryStream workStream = new MemoryStream();
             Document document = new Document(PageSize.A4, 25, 25, 50, 30);
@@ -351,6 +397,282 @@ namespace PPtest.Controllers
             document.Add(new Paragraph("ข้อมูลตามบัตรประชาชน"));
             document.Add(new Paragraph(DateTime.Now.ToString()));
 
+            document.Close();
+
+            byte[] byteInfo = workStream.ToArray();
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+            return new FileStreamResult(workStream, "application/pdf");
+
+
+        }
+
+        public IActionResult iTextDetailsPdfTest()
+        {
+            //BaseFont bf = BaseFont.CreateFont(Server.MapPath("~/Fonts/THSarabunNew.ttf"), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            //Font defaultFont = new Font(bf, 12);
+            //Font header = new Font(bf, 14, Font.BOLD);
+            //Font headTB = new Font(bf, 12, Font.BOLD);
+
+            //Font arial = FontFactory.GetFont("Arial", 28, Color.GRAY);
+            //Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(125, 88, 15));
+            //Font palatino = FontFactory.GetFont(
+            // "palatino linotype italique",
+            //  BaseFont.CP1252,
+            //  BaseFont.EMBEDDED,
+            //  10,
+            //  Font.ITALIC,
+            //  Color.GREEN
+            //  );
+            //Font smallfont = FontFactory.GetFont("Arial", 7);
+            //Font x = FontFactory.GetFont("nina fett");
+            //x.Size = 10;
+            //x.SetStyle("Italic");
+            //x.SetColor(100, 50, 200);
+
+            MemoryStream workStream = new MemoryStream();
+            Document document = new Document(PageSize.A4, 25, 25, 50, 30);
+            PdfWriter.GetInstance(document, workStream).CloseStream = false;
+            //PdfWriter p = PdfWriter.GetInstance(document, workStream);
+            var logoPath = Path.Combine(_env.WebRootPath, "images");
+            logoPath = Path.Combine(logoPath, "logo_t.png");
+            Image logo = Image.GetInstance(logoPath);
+            logo.ScalePercent(50);
+            //png.ScaleToFit(140f, 120f);
+            //png.SpacingBefore = 10f;
+            //png.SpacingAfter = 1f;
+            logo.Alignment = Element.ALIGN_CENTER;
+
+            var memberPicPath = Path.Combine(_env.WebRootPath, "images_member");
+            memberPicPath = Path.Combine(memberPicPath, "_2_1365148227.jpg");
+            //memberPicPath = Path.Combine(memberPicPath, "_677138-topic-ix-1.jpg");
+
+            Image memberPic = Image.GetInstance(memberPicPath);
+            memberPic.ScaleToFit(120f, 120f);
+            memberPic.Border = Rectangle.BOX;
+            memberPic.BorderColor = BaseColor.DARK_GRAY;
+            memberPic.BorderWidth = 1f;
+            //var w = memberPic.ScaledWidth / 2;
+            memberPic.SetAbsolutePosition(document.PageSize.Width - 30f - memberPic.ScaledWidth, document.PageSize.Height - 130f);
+            //png.ScaleToFit(140f, 120f);
+            //png.SpacingBefore = 10f;
+            //png.SpacingAfter = 1f;
+            memberPic.Alignment = Element.ALIGN_RIGHT;
+
+            Rectangle rect = new Rectangle(30, 36, 565, 706);
+            rect.Border = Rectangle.BOX;
+            rect.BorderColor = BaseColor.DARK_GRAY;
+            rect.BorderWidth = 1f;
+
+
+            //int totalfonts = FontFactory.RegisterDirectory("C:\\WINDOWS\\Fonts");
+            //StringBuilder sb = new StringBuilder();
+            //foreach (string fontname in FontFactory.RegisteredFonts)
+            //{
+            //    sb.Append(fontname + "\n");
+            //}
+
+            //Font cn = FontFactory.GetFont("CordiaNew");
+            //cn.Size = 16;
+            //cn.SetStyle("Italic");
+            //cn.SetColor(100, 50, 200);
+            //FontFactory.RegisterDirectory("C:\\WINDOWS\\Fonts");
+
+            var fontPath = Path.Combine(_env.WebRootPath, "fonts/THSarabunNew.ttf");
+            BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font cn = new Font(bf, 16);
+            Font cnb = new Font(bf, 16, Font.BOLD);
+            Font cni = new Font(bf, 16, Font.ITALIC);
+
+            //FontFactory.RegisterDirectory(Environment.GetEnvironmentVariable("SystemRoot")+"\\Fonts");
+            
+            //Font cn = FontFactory.GetFont("cordianew", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16);
+            //Font cnb = FontFactory.GetFont("cordianew-bold",BaseFont.IDENTITY_H,BaseFont.EMBEDDED,16);
+            //Font cni = FontFactory.GetFont("cordianew-italic", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16);
+            //Font cnbi = FontFactory.GetFont("cordianew-bolditalic", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16);
+
+
+
+
+            document.Open();
+            document.Add(rect);
+            document.Add(logo); document.Add(memberPic);
+
+            var fname = "รุ่งนภา"; var lname = "ใจสว่าง"; var sex = "หญิง"; var nationality = "ไทย";
+            var birthdate = "10 มกราคม พ.ศ.2524"; var current_age = "35";
+            var cid_card = "1409900XXXXXX"; var marry_status = "โสด"; var religion = "พุทธ";
+            var tel = "04-281-XXXX"; var mobile = "08-2110-XXXX";
+            var fax = "04-281-XXXX"; var email = "roongnapa2016@gmail.co.th";
+            var social_app_data = "Line ID: roongnapa2016, Facebook: roongnapa2016";
+            var texta_address = "55/261 โครงการสุโขทัย อเวนิว 99 ถ.บอนด์สตรีท";
+            var textb_address = "ต.บางพูด อ.ปากเกร็ด จ.นนทบุรี 11120";
+            var textc_address = "";
+
+
+            PdfPTable table = new PdfPTable(2);
+            table.DefaultCell.Border = Rectangle.NO_BORDER;
+            //table.TotalWidth = document.PageSize.Width;
+            table.TotalWidth = 535f;
+            table.LockedWidth = true;
+            table.DefaultCell.VerticalAlignment = 1;
+            table.DefaultCell.PaddingLeft = 15f;
+            table.DefaultCell.PaddingTop = 30f;
+            float[] widths = new float[] { 135f, 400f };
+            table.SetWidths(widths);
+            table.SpacingBefore = 50f;
+            //PdfPCell cell = new PdfPCell(new Phrase("ข้อมูลตามบัตรประชาชน", cnb));
+            //cell.Colspan = 3;
+            //cell.HorizontalAlignment = 2; //0=Left, 1=Centre, 2=Right
+            //table.AddCell(cell);
+
+            //new paragraph
+            PdfPCell cell = new PdfPCell(new Phrase("ข้อมูลตามบัตรประชาชน", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+                //Member Info Row 1
+                PdfPTable memberInfoRow1 = new PdfPTable(6);
+                memberInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow1.TotalWidth = 400f;
+                memberInfoRow1.LockedWidth = true;
+                memberInfoRow1.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow1.SetWidths(new float[] { 15f,135f, 20f,30f, 30f,55f });
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase("ชื่อ", cnb)) { Border = Rectangle.NO_BORDER } );
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase(fname + " " + lname, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase("เพศ", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase(sex, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase("สัญชาติ", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow1.AddCell(new PdfPCell(new Phrase(nationality, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+
+            table.AddCell("");
+                //Member Info Row 2
+                PdfPTable memberInfoRow2 = new PdfPTable(5);
+                memberInfoRow2.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow2.TotalWidth = 400f;
+                memberInfoRow2.LockedWidth = true;
+                memberInfoRow2.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow2.SetWidths(new float[] { 60f,95f, 20f,15f,105f });
+                memberInfoRow2.AddCell(new PdfPCell(new Phrase("วัน/เดือน/ปี เกิด", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow2.AddCell(new PdfPCell(new Phrase(birthdate, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow2.AddCell(new PdfPCell(new Phrase("อายุ", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow2.AddCell(new PdfPCell(new Phrase(current_age, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow2.AddCell(new PdfPCell(new Phrase("ปี", cnb)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow2); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+                //Member Info Row 3
+                PdfPTable memberInfoRow3 = new PdfPTable(6);
+                memberInfoRow3.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow3.TotalWidth = 400f;
+                memberInfoRow3.LockedWidth = true;
+                memberInfoRow3.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow3.SetWidths(new float[] { 78f, 77f, 40f,25f, 25f,50f });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase("หมายเลขบัตรประชาชน", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase(cid_card, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase("สถานภาพ", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase(marry_status, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase("ศาสนา", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow3.AddCell(new PdfPCell(new Phrase(religion, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow3); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+            //Member Info Row 4
+                PdfPTable memberInfoRow4 = new PdfPTable(4);
+                memberInfoRow4.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow4.TotalWidth = 400f;
+                memberInfoRow4.LockedWidth = true;
+                memberInfoRow4.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow4.SetWidths(new float[] { 83f,77f, 80f,65f });
+                memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์มือถือ", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow4.AddCell(new PdfPCell(new Phrase(mobile, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์บ้าน", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow4.AddCell(new PdfPCell(new Phrase(tel, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow4); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+                //Member Info Row 5
+                PdfPTable memberInfoRow5 = new PdfPTable(4);
+                memberInfoRow5.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow5.TotalWidth = 400f;
+                memberInfoRow5.LockedWidth = true;
+                memberInfoRow5.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow5.SetWidths(new float[] { 25f,135f, 23f,122f });
+                memberInfoRow5.AddCell(new PdfPCell(new Phrase("แฟ็กส์", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow5.AddCell(new PdfPCell(new Phrase(fax, cni)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow5.AddCell(new PdfPCell(new Phrase("อีเมล", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow5.AddCell(new PdfPCell(new Phrase(email, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow5); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+                //Member Info Row 6
+                PdfPTable memberInfoRow6 = new PdfPTable(2);
+                memberInfoRow6.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow6.TotalWidth = 400f;
+                memberInfoRow6.LockedWidth = true;
+                memberInfoRow6.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow6.SetWidths(new float[] { 30f, 285f });
+                memberInfoRow6.AddCell(new PdfPCell(new Phrase("Social", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow6.AddCell(new PdfPCell(new Phrase(social_app_data, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow6); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+                //Member Info Row 7
+                PdfPTable memberInfoRow7 = new PdfPTable(2);
+                memberInfoRow7.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow7.TotalWidth = 400f;
+                memberInfoRow7.LockedWidth = true;
+                memberInfoRow7.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow7.SetWidths(new float[] { 30f, 285f });
+                memberInfoRow7.AddCell(new PdfPCell(new Phrase("ที่อยู่", cnb)) { Border = Rectangle.NO_BORDER });
+                memberInfoRow7.AddCell(new PdfPCell(new Phrase(texta_address, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow7); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            table.AddCell("");
+                //Member Info Row 8
+                PdfPTable memberInfoRow8 = new PdfPTable(2);
+                memberInfoRow8.DefaultCell.Border = Rectangle.NO_BORDER;
+                memberInfoRow8.TotalWidth = 400f;
+                memberInfoRow8.LockedWidth = true;
+                memberInfoRow8.DefaultCell.VerticalAlignment = 1;
+                memberInfoRow8.SetWidths(new float[] { 30f, 285f });
+                memberInfoRow8.AddCell("");
+                memberInfoRow8.AddCell(new PdfPCell(new Phrase(textb_address, cni)) { Border = Rectangle.NO_BORDER });
+                cell = new PdfPCell(memberInfoRow8); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            //Line
+            table.AddCell("");
+                PdfPTable line = new PdfPTable(3);
+                line.DefaultCell.Border = Rectangle.NO_BORDER;
+                line.DefaultCell.FixedHeight = 1f;
+                line.SpacingBefore = -1f;
+                line.TotalWidth = 400f;
+                line.LockedWidth = true;
+                line.SetWidths(new float[] { 5f, 295f, 15f });
+                line.AddCell("");
+                cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f};
+                cell.BorderWidthTop = 1f;
+                line.AddCell(cell);
+                line.AddCell("");
+            table.AddCell(line);
+
+            //new paragraph
+            cell = new PdfPCell(new Phrase("ข้อมูลสถานที่ทำงาน และประวัติการทำงาน", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+
+            table.AddCell(cell);
+
+            document.Add(table);
             document.Close();
 
             byte[] byteInfo = workStream.ToArray();
