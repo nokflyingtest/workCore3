@@ -12,6 +12,25 @@ using System.Text;
 
 namespace PPtest.Controllers
 {
+    public class listTraining
+    {
+        string rec_no { get; set; }
+        string code { get; set; }
+        string desc { get; set; }
+        string grade { get; set; }
+    }
+    public class listInfo
+    {
+        string rec_no { get; set; }
+        string desc { get; set; }
+    }
+    public class listWork
+    {
+        string company { get; set; }
+        string position { get; set; }
+        string year { get; set; }
+        string address { get; set; }
+    }
     public class HomeController : Controller
     {
         private IHostingEnvironment _env;
@@ -486,7 +505,7 @@ namespace PPtest.Controllers
             Font cni = new Font(bf, 16, Font.ITALIC);
 
             //FontFactory.RegisterDirectory(Environment.GetEnvironmentVariable("SystemRoot")+"\\Fonts");
-            
+
             //Font cn = FontFactory.GetFont("cordianew", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16);
             //Font cnb = FontFactory.GetFont("cordianew-bold",BaseFont.IDENTITY_H,BaseFont.EMBEDDED,16);
             //Font cni = FontFactory.GetFont("cordianew-italic", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16);
@@ -509,6 +528,16 @@ namespace PPtest.Controllers
             var textb_address = "ต.บางพูด อ.ปากเกร็ด จ.นนทบุรี 11120";
             var textc_address = "";
 
+            var train_rec_no = "1"; var train_code = "10110"; var train_desc = "การแปนรูปผลิตภัณฑ์"; var train_grade = "Good";
+
+            var visit_rec_no = "1"; var visit_desc = "โครงการดูงานการส่งออกสินค้าต่างประเทศ ที่ประเทศมาเลเซีย";
+            List<listTraining> train = new List<listTraining>();
+            listTraining t1 = new listTraining();
+            t1.rec_no = "1";
+            train.Add(t1);
+            train.Add(new listTraining { rec_no = "1" });
+            List<listInfo> visit = new List<listInfo>();
+            List<listWork> work = new List<listWork>();
 
             PdfPTable table = new PdfPTable(2);
             table.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -517,7 +546,7 @@ namespace PPtest.Controllers
             table.LockedWidth = true;
             table.DefaultCell.VerticalAlignment = 1;
             table.DefaultCell.PaddingLeft = 15f;
-            table.DefaultCell.PaddingTop = 30f;
+            //table.DefaultCell.PaddingTop = 30f;
             float[] widths = new float[] { 135f, 400f };
             table.SetWidths(widths);
             table.SpacingBefore = 50f;
@@ -526,127 +555,181 @@ namespace PPtest.Controllers
             //cell.HorizontalAlignment = 2; //0=Left, 1=Centre, 2=Right
             //table.AddCell(cell);
 
-            //new paragraph
+            //new paragraph Member Info
             PdfPCell cell = new PdfPCell(new Phrase("ข้อมูลตามบัตรประชาชน", cnb));
             cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            //Member Info Row 1
             table.AddCell(cell);
-                //Member Info Row 1
-                PdfPTable memberInfoRow1 = new PdfPTable(6);
-                memberInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow1.TotalWidth = 400f;
-                memberInfoRow1.LockedWidth = true;
-                memberInfoRow1.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow1.SetWidths(new float[] { 15f,135f, 20f,30f, 30f,55f });
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase("ชื่อ", cnb)) { Border = Rectangle.NO_BORDER } );
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase(fname + " " + lname, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase("เพศ", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase(sex, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase("สัญชาติ", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow1.AddCell(new PdfPCell(new Phrase(nationality, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            PdfPTable memberInfoRow1 = new PdfPTable(6);
+            memberInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow1.TotalWidth = 400f;
+            memberInfoRow1.LockedWidth = true;
+            memberInfoRow1.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow1.SetWidths(new float[] { 15f, 135f, 20f, 30f, 30f, 55f });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase("ชื่อ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase(fname + " " + lname, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase("เพศ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase(sex, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase("สัญชาติ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow1.AddCell(new PdfPCell(new Phrase(nationality, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
-
-
+            //Member Info Row 2
             table.AddCell("");
-                //Member Info Row 2
-                PdfPTable memberInfoRow2 = new PdfPTable(5);
-                memberInfoRow2.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow2.TotalWidth = 400f;
-                memberInfoRow2.LockedWidth = true;
-                memberInfoRow2.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow2.SetWidths(new float[] { 60f,95f, 20f,15f,105f });
-                memberInfoRow2.AddCell(new PdfPCell(new Phrase("วัน/เดือน/ปี เกิด", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow2.AddCell(new PdfPCell(new Phrase(birthdate, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow2.AddCell(new PdfPCell(new Phrase("อายุ", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow2.AddCell(new PdfPCell(new Phrase(current_age, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow2.AddCell(new PdfPCell(new Phrase("ปี", cnb)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow2); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            PdfPTable memberInfoRow2 = new PdfPTable(5);
+            memberInfoRow2.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow2.TotalWidth = 400f;
+            memberInfoRow2.LockedWidth = true;
+            memberInfoRow2.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow2.SetWidths(new float[] { 60f, 95f, 20f, 15f, 105f });
+            memberInfoRow2.AddCell(new PdfPCell(new Phrase("วัน/เดือน/ปี เกิด", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow2.AddCell(new PdfPCell(new Phrase(birthdate, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow2.AddCell(new PdfPCell(new Phrase("อายุ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow2.AddCell(new PdfPCell(new Phrase(current_age, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow2.AddCell(new PdfPCell(new Phrase("ปี", cnb)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow2); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
-
+            //Member Info Row 3
             table.AddCell("");
-                //Member Info Row 3
-                PdfPTable memberInfoRow3 = new PdfPTable(6);
-                memberInfoRow3.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow3.TotalWidth = 400f;
-                memberInfoRow3.LockedWidth = true;
-                memberInfoRow3.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow3.SetWidths(new float[] { 78f, 77f, 40f,25f, 25f,50f });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase("หมายเลขบัตรประชาชน", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase(cid_card, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase("สถานภาพ", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase(marry_status, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase("ศาสนา", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow3.AddCell(new PdfPCell(new Phrase(religion, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow3); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            PdfPTable memberInfoRow3 = new PdfPTable(6);
+            memberInfoRow3.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow3.TotalWidth = 400f;
+            memberInfoRow3.LockedWidth = true;
+            memberInfoRow3.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow3.SetWidths(new float[] { 78f, 77f, 40f, 25f, 25f, 50f });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase("หมายเลขบัตรประชาชน", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase(cid_card, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase("สถานภาพ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase(marry_status, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase("ศาสนา", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase(religion, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow3); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
-
-            table.AddCell("");
             //Member Info Row 4
-                PdfPTable memberInfoRow4 = new PdfPTable(4);
-                memberInfoRow4.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow4.TotalWidth = 400f;
-                memberInfoRow4.LockedWidth = true;
-                memberInfoRow4.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow4.SetWidths(new float[] { 83f,77f, 80f,65f });
-                memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์มือถือ", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow4.AddCell(new PdfPCell(new Phrase(mobile, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์บ้าน", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow4.AddCell(new PdfPCell(new Phrase(tel, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow4); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell("");
+            PdfPTable memberInfoRow4 = new PdfPTable(4);
+            memberInfoRow4.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow4.TotalWidth = 400f;
+            memberInfoRow4.LockedWidth = true;
+            memberInfoRow4.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow4.SetWidths(new float[] { 83f, 77f, 80f, 65f });
+            memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์มือถือ", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow4.AddCell(new PdfPCell(new Phrase(mobile, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow4.AddCell(new PdfPCell(new Phrase("หมายเลขโทรศัพท์บ้าน", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow4.AddCell(new PdfPCell(new Phrase(tel, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow4); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+            //Member Info Row 5
+            table.AddCell("");
+            PdfPTable memberInfoRow5 = new PdfPTable(4);
+            memberInfoRow5.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow5.TotalWidth = 400f;
+            memberInfoRow5.LockedWidth = true;
+            memberInfoRow5.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow5.SetWidths(new float[] { 25f, 135f, 23f, 122f });
+            memberInfoRow5.AddCell(new PdfPCell(new Phrase("แฟ็กส์", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow5.AddCell(new PdfPCell(new Phrase(fax, cni)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow5.AddCell(new PdfPCell(new Phrase("อีเมล", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow5.AddCell(new PdfPCell(new Phrase(email, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow5); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+            //Member Info Row 6
+            table.AddCell("");
+            PdfPTable memberInfoRow6 = new PdfPTable(2);
+            memberInfoRow6.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow6.TotalWidth = 400f;
+            memberInfoRow6.LockedWidth = true;
+            memberInfoRow6.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow6.SetWidths(new float[] { 30f, 285f });
+            memberInfoRow6.AddCell(new PdfPCell(new Phrase("Social", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow6.AddCell(new PdfPCell(new Phrase(social_app_data, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow6); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+            //Member Info Row 7
+            table.AddCell("");
+            PdfPTable memberInfoRow7 = new PdfPTable(2);
+            memberInfoRow7.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow7.TotalWidth = 400f;
+            memberInfoRow7.LockedWidth = true;
+            memberInfoRow7.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow7.SetWidths(new float[] { 30f, 285f });
+            memberInfoRow7.AddCell(new PdfPCell(new Phrase("ที่อยู่", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow7.AddCell(new PdfPCell(new Phrase(texta_address, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow7); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+            //Member Info Row 8
+            table.AddCell("");
+            PdfPTable memberInfoRow8 = new PdfPTable(2);
+            memberInfoRow8.DefaultCell.Border = Rectangle.NO_BORDER;
+            memberInfoRow8.TotalWidth = 400f;
+            memberInfoRow8.LockedWidth = true;
+            memberInfoRow8.DefaultCell.VerticalAlignment = 1;
+            memberInfoRow8.SetWidths(new float[] { 30f, 285f });
+            memberInfoRow8.AddCell("");
+            memberInfoRow8.AddCell(new PdfPCell(new Phrase(textb_address, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(memberInfoRow8); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
 
-            table.AddCell("");
-                //Member Info Row 5
-                PdfPTable memberInfoRow5 = new PdfPTable(4);
-                memberInfoRow5.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow5.TotalWidth = 400f;
-                memberInfoRow5.LockedWidth = true;
-                memberInfoRow5.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow5.SetWidths(new float[] { 25f,135f, 23f,122f });
-                memberInfoRow5.AddCell(new PdfPCell(new Phrase("แฟ็กส์", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow5.AddCell(new PdfPCell(new Phrase(fax, cni)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow5.AddCell(new PdfPCell(new Phrase("อีเมล", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow5.AddCell(new PdfPCell(new Phrase(email, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow5); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            //Line
+            table.AddCell(" "); table.AddCell(" ");
+
+            //new paragraph Training Info
+            cell = new PdfPCell(new Phrase("ประวัติการฝึกอบรม", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            //Train Info Row 1
+            table.AddCell(cell);
+            PdfPTable trainInfoRow1 = new PdfPTable(7);
+            trainInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+            trainInfoRow1.TotalWidth = 400f;
+            trainInfoRow1.LockedWidth = true;
+            trainInfoRow1.DefaultCell.VerticalAlignment = 1;
+            trainInfoRow1.SetWidths(new float[] { 10f, 18f, 30f, 30f, 100f, 35f, 52f });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase("รหัส", cnb)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_code, cni)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase("หลักสูตร", cnb)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_desc, cni)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase("ระดับเกรด", cnb)) { Border = Rectangle.NO_BORDER });
+            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_grade, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(trainInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
 
-            table.AddCell("");
-                //Member Info Row 6
-                PdfPTable memberInfoRow6 = new PdfPTable(2);
-                memberInfoRow6.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow6.TotalWidth = 400f;
-                memberInfoRow6.LockedWidth = true;
-                memberInfoRow6.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow6.SetWidths(new float[] { 30f, 285f });
-                memberInfoRow6.AddCell(new PdfPCell(new Phrase("Social", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow6.AddCell(new PdfPCell(new Phrase(social_app_data, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow6); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            //Line
+            table.AddCell(" "); table.AddCell(" ");
+
+            //new paragraph Training Info
+            cell = new PdfPCell(new Phrase("ประวัติการดูงาน", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            //Train Info Row 1
+            table.AddCell(cell);
+            PdfPTable visitInfoRow1 = new PdfPTable(2);
+            visitInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+            visitInfoRow1.TotalWidth = 400f;
+            visitInfoRow1.LockedWidth = true;
+            visitInfoRow1.DefaultCell.VerticalAlignment = 1;
+            visitInfoRow1.SetWidths(new float[] { 10f, 300f });
+            visitInfoRow1.AddCell(new PdfPCell(new Phrase(visit_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+            visitInfoRow1.AddCell(new PdfPCell(new Phrase(visit_desc, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(visitInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
 
-            table.AddCell("");
-                //Member Info Row 7
-                PdfPTable memberInfoRow7 = new PdfPTable(2);
-                memberInfoRow7.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow7.TotalWidth = 400f;
-                memberInfoRow7.LockedWidth = true;
-                memberInfoRow7.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow7.SetWidths(new float[] { 30f, 285f });
-                memberInfoRow7.AddCell(new PdfPCell(new Phrase("ที่อยู่", cnb)) { Border = Rectangle.NO_BORDER });
-                memberInfoRow7.AddCell(new PdfPCell(new Phrase(texta_address, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow7); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
-            table.AddCell(cell);
+            //Line
+            table.AddCell(" "); table.AddCell(" ");
 
-            table.AddCell("");
-                //Member Info Row 8
-                PdfPTable memberInfoRow8 = new PdfPTable(2);
-                memberInfoRow8.DefaultCell.Border = Rectangle.NO_BORDER;
-                memberInfoRow8.TotalWidth = 400f;
-                memberInfoRow8.LockedWidth = true;
-                memberInfoRow8.DefaultCell.VerticalAlignment = 1;
-                memberInfoRow8.SetWidths(new float[] { 30f, 285f });
-                memberInfoRow8.AddCell("");
-                memberInfoRow8.AddCell(new PdfPCell(new Phrase(textb_address, cni)) { Border = Rectangle.NO_BORDER });
-                cell = new PdfPCell(memberInfoRow8); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            //new paragraph Social Info
+            cell = new PdfPCell(new Phrase("ประสบการณ์ช่วยเหลือสังคม", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            //Social Info Row 1
+            table.AddCell(cell);
+            PdfPTable socialInfoRow1 = new PdfPTable(2);
+            socialInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+            socialInfoRow1.TotalWidth = 400f;
+            socialInfoRow1.LockedWidth = true;
+            socialInfoRow1.DefaultCell.VerticalAlignment = 1;
+            socialInfoRow1.SetWidths(new float[] { 10f, 300f });
+            socialInfoRow1.AddCell(new PdfPCell(new Phrase(social_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+            socialInfoRow1.AddCell(new PdfPCell(new Phrase(social_desc, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(socialInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
             table.AddCell(cell);
 
             //Line
@@ -654,7 +737,7 @@ namespace PPtest.Controllers
                 PdfPTable line = new PdfPTable(3);
                 line.DefaultCell.Border = Rectangle.NO_BORDER;
                 line.DefaultCell.FixedHeight = 1f;
-                line.SpacingBefore = -1f;
+                line.SpacingBefore = 1f;
                 line.TotalWidth = 400f;
                 line.LockedWidth = true;
                 line.SetWidths(new float[] { 5f, 295f, 15f });
