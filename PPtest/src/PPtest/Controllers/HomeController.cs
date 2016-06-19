@@ -12,27 +12,29 @@ using System.Text;
 
 namespace PPtest.Controllers
 {
-    public class listTraining
-    {
-        string rec_no { get; set; }
-        string code { get; set; }
-        string desc { get; set; }
-        string grade { get; set; }
-    }
-    public class listInfo
-    {
-        string rec_no { get; set; }
-        string desc { get; set; }
-    }
-    public class listWork
-    {
-        string company { get; set; }
-        string position { get; set; }
-        string year { get; set; }
-        string address { get; set; }
-    }
     public class HomeController : Controller
     {
+        private class listTraining
+        {
+            public string rec_no { get; set; }
+            public string code { get; set; }
+            public string desc { get; set; }
+            public string grade { get; set; }
+        }
+        private class listInfo
+        {
+            public string rec_no { get; set; }
+            public string desc { get; set; }
+        }
+        private class listWork
+        {
+            public string rec_no { get; set; }
+            public string company { get; set; }
+            public string position { get; set; }
+            public string year { get; set; }
+            public string address { get; set; }
+        }
+
         private IHostingEnvironment _env;
 
         public HomeController(IHostingEnvironment env)
@@ -528,16 +530,29 @@ namespace PPtest.Controllers
             var textb_address = "ต.บางพูด อ.ปากเกร็ด จ.นนทบุรี 11120";
             var textc_address = "";
 
-            var train_rec_no = "1"; var train_code = "10110"; var train_desc = "การแปนรูปผลิตภัณฑ์"; var train_grade = "Good";
-
-            var visit_rec_no = "1"; var visit_desc = "โครงการดูงานการส่งออกสินค้าต่างประเทศ ที่ประเทศมาเลเซีย";
             List<listTraining> train = new List<listTraining>();
-            listTraining t1 = new listTraining();
-            t1.rec_no = "1";
-            train.Add(t1);
-            train.Add(new listTraining { rec_no = "1" });
+            train.Add(new listTraining { rec_no = "1", code = "10110", desc = "การแปรรูปผลิตภัณฑ์", grade = "Good" });
+
             List<listInfo> visit = new List<listInfo>();
+            visit.Add(new listInfo { rec_no = "1", desc = "โครงการดูงานการส่งออกสินค้าต่างประเทศ ที่ประเทศมาเลเซีย" });
+
+            List<listInfo> social = new List<listInfo>();
+            social.Add(new listInfo { rec_no = "1", desc = "ปลูกป่าที่จังหวัดเชียงใหม่" });
+            social.Add(new listInfo { rec_no = "2", desc = "ให้ความรู้เกี่ยวกับการเกษตรแบบเศรษฐกิจพอเพียงให้กับศูนย์ส่งเสริมการเกษตร จังหวัดน่าน" });
+
+            List<listInfo> reward = new List<listInfo>();
+            reward.Add(new listInfo { rec_no = "1", desc = "รางวัลโครงการผู้นำตัวอย่างเศรษฐกิจพอเพียง ปี พ.ศ.2558" });
+
+            List<listInfo> education = new List<listInfo>();
+            education.Add(new listInfo { rec_no = "1", desc = "ระดับมัธยมศึกษา โรงเรียนหอการค้า สาขาพาณิชยกรรม" });
+            education.Add(new listInfo { rec_no = "2", desc = "ระดับอุดมศึกษา มหาวิทยาลัยสุโขทัยธรรมมาธิราช สาขาการเกษตร" });
+
+            var medical_history = "หอบหืด"; var blood_group = "โอ"; var restrict_food = "อาหารทะเล"; 
+            var hobby = "เพาะพันธุ์กล้วยไม้"; var special_skill = "เพาะพันธุ์กล้วยไม้หายาก";
+
             List<listWork> work = new List<listWork>();
+            work.Add(new listWork { rec_no = "1", company = "บริษัท เกษตรพัฒนา (Kasadpattana Co.,Ltd.)", position = "วิทยากร (Lecturer)", year = "พ.ศ.2559", address = "55/621 โครงการสุโขทัย อเวนิว 99 ถ.บอนด์สตรีท ต.บางพูด อ.ปากเกร็ด จ.นนทบุรี 11120" });
+
 
             PdfPTable table = new PdfPTable(2);
             table.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -671,89 +686,333 @@ namespace PPtest.Controllers
             table.AddCell(cell);
 
             //Line
-            table.AddCell(" "); table.AddCell(" ");
+            table.AddCell(" ");
+            //Line
+            PdfPTable line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
 
             //new paragraph Training Info
             cell = new PdfPCell(new Phrase("ประวัติการฝึกอบรม", cnb));
             cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
-            //Train Info Row 1
             table.AddCell(cell);
-            PdfPTable trainInfoRow1 = new PdfPTable(7);
-            trainInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
-            trainInfoRow1.TotalWidth = 400f;
-            trainInfoRow1.LockedWidth = true;
-            trainInfoRow1.DefaultCell.VerticalAlignment = 1;
-            trainInfoRow1.SetWidths(new float[] { 10f, 18f, 30f, 30f, 100f, 35f, 52f });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase("รหัส", cnb)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_code, cni)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase("หลักสูตร", cnb)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_desc, cni)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase("ระดับเกรด", cnb)) { Border = Rectangle.NO_BORDER });
-            trainInfoRow1.AddCell(new PdfPCell(new Phrase(train_grade, cni)) { Border = Rectangle.NO_BORDER });
-            cell = new PdfPCell(trainInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
-            table.AddCell(cell);
+            if (train.Count > 0)
+            {
+                for (var i = 0; i < train.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(7);
+                    //rowz.DefaultCell.Border = Rectangle.NO_BORDER;
+                    rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.TotalWidth = 400f; rowz.LockedWidth = true;
+                    rowz.SetWidths(new float[] { 8f, 12f, 30f, 22f, 70f, 27f, 40f });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[0].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("รหัส", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[0].code, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("หลักสูตร", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[0].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("ระดับเกรด", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[0].grade, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
 
             //Line
-            table.AddCell(" "); table.AddCell(" ");
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
 
-            //new paragraph Training Info
+            //new paragraph
             cell = new PdfPCell(new Phrase("ประวัติการดูงาน", cnb));
             cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
-            //Train Info Row 1
             table.AddCell(cell);
-            PdfPTable visitInfoRow1 = new PdfPTable(2);
-            visitInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
-            visitInfoRow1.TotalWidth = 400f;
-            visitInfoRow1.LockedWidth = true;
-            visitInfoRow1.DefaultCell.VerticalAlignment = 1;
-            visitInfoRow1.SetWidths(new float[] { 10f, 300f });
-            visitInfoRow1.AddCell(new PdfPCell(new Phrase(visit_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
-            visitInfoRow1.AddCell(new PdfPCell(new Phrase(visit_desc, cni)) { Border = Rectangle.NO_BORDER });
-            cell = new PdfPCell(visitInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
-            table.AddCell(cell);
+            if (visit.Count > 0)
+            {
+                for (var i = 0; i < visit.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(2);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER;
+                    rowz.TotalWidth = 400f;
+                    rowz.LockedWidth = true;
+                    rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.AddCell(new PdfPCell(new Phrase(visit[0].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(visit[0].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
 
             //Line
-            table.AddCell(" "); table.AddCell(" ");
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
 
             //new paragraph Social Info
             cell = new PdfPCell(new Phrase("ประสบการณ์ช่วยเหลือสังคม", cnb));
             cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
-            //Social Info Row 1
             table.AddCell(cell);
-            PdfPTable socialInfoRow1 = new PdfPTable(2);
-            socialInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
-            socialInfoRow1.TotalWidth = 400f;
-            socialInfoRow1.LockedWidth = true;
-            socialInfoRow1.DefaultCell.VerticalAlignment = 1;
-            socialInfoRow1.SetWidths(new float[] { 10f, 300f });
-            socialInfoRow1.AddCell(new PdfPCell(new Phrase(social_rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
-            socialInfoRow1.AddCell(new PdfPCell(new Phrase(social_desc, cni)) { Border = Rectangle.NO_BORDER });
-            cell = new PdfPCell(socialInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
-            table.AddCell(cell);
+            if (social.Count > 0) {
+                for (var i = 0; i < social.Count; i++) {
+                    PdfPTable rowz = new PdfPTable(2);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER;
+                    rowz.TotalWidth = 400f;
+                    rowz.LockedWidth = true;
+                    rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.AddCell(new PdfPCell(new Phrase(social[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(social[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
 
             //Line
-            table.AddCell("");
-                PdfPTable line = new PdfPTable(3);
-                line.DefaultCell.Border = Rectangle.NO_BORDER;
-                line.DefaultCell.FixedHeight = 1f;
-                line.SpacingBefore = 1f;
-                line.TotalWidth = 400f;
-                line.LockedWidth = true;
-                line.SetWidths(new float[] { 5f, 295f, 15f });
-                line.AddCell("");
-                cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f};
-                cell.BorderWidthTop = 1f;
-                line.AddCell(cell);
-                line.AddCell("");
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
             table.AddCell(line);
 
             //new paragraph
-            cell = new PdfPCell(new Phrase("ข้อมูลสถานที่ทำงาน และประวัติการทำงาน", cnb));
+            cell = new PdfPCell(new Phrase("รางวัลเชิดชูเกียรติ", cnb));
             cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
             table.AddCell(cell);
+            if (reward.Count > 0)
+            {
+                for (var i = 0; i < reward.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(2);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER;
+                    rowz.TotalWidth = 400f;
+                    rowz.LockedWidth = true;
+                    rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.AddCell(new PdfPCell(new Phrase(reward[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(reward[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
 
+            //Line
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
+
+            //new paragraph
+            cell = new PdfPCell(new Phrase("การศึกษา", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
             table.AddCell(cell);
+            if (education.Count > 0)
+            {
+                for (var i = 0; i < education.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(2);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER;
+                    rowz.TotalWidth = 400f;
+                    rowz.LockedWidth = true;
+                    rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.AddCell(new PdfPCell(new Phrase(education[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(education[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
+
+            //Line
+            //table.AddCell(" ");
+            //Line
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
+
+            //new paragraph Health Info
+            cell = new PdfPCell(new Phrase("ข้อมูลสุขภาพ", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+
+            //Health Info Row 1
+            table.AddCell(cell);
+            PdfPTable healthInfoRow1 = new PdfPTable(2);
+            healthInfoRow1.DefaultCell.Border = Rectangle.NO_BORDER;
+            healthInfoRow1.TotalWidth = 400f;
+            healthInfoRow1.LockedWidth = true;
+            healthInfoRow1.DefaultCell.VerticalAlignment = 1;
+            healthInfoRow1.SetWidths(new float[] { 30f, 165f });
+            healthInfoRow1.AddCell(new PdfPCell(new Phrase("โรคประจำตัว", cnb)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow1.AddCell(new PdfPCell(new Phrase(medical_history, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(healthInfoRow1); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            //Health Info Row 2
+            table.AddCell("");
+            PdfPTable healthInfoRow2 = new PdfPTable(4);
+            healthInfoRow2.DefaultCell.Border = Rectangle.NO_BORDER;
+            healthInfoRow2.TotalWidth = 400f;
+            healthInfoRow2.LockedWidth = true;
+            healthInfoRow2.DefaultCell.VerticalAlignment = 1;
+            healthInfoRow2.SetWidths(new float[] { 30f, 50f, 45f, 70f });
+            healthInfoRow2.AddCell(new PdfPCell(new Phrase("หมู่โลหิต", cnb)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow2.AddCell(new PdfPCell(new Phrase(blood_group, cni)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow2.AddCell(new PdfPCell(new Phrase("งานอดิเรก", cnb)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow2.AddCell(new PdfPCell(new Phrase(hobby, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(healthInfoRow2); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            //Health Info Row 3
+            table.AddCell("");
+            PdfPTable healthInfoRow3 = new PdfPTable(4);
+            healthInfoRow3.DefaultCell.Border = Rectangle.NO_BORDER;
+            healthInfoRow3.TotalWidth = 400f;
+            healthInfoRow3.LockedWidth = true;
+            healthInfoRow3.DefaultCell.VerticalAlignment = 1;
+            healthInfoRow3.SetWidths(new float[] { 30f, 50f, 45f, 70f });
+            healthInfoRow3.AddCell(new PdfPCell(new Phrase("อาหารที่แพ้", cnb)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow3.AddCell(new PdfPCell(new Phrase(restrict_food, cni)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow3.AddCell(new PdfPCell(new Phrase("ความสามารถพิเศษ", cnb)) { Border = Rectangle.NO_BORDER });
+            healthInfoRow3.AddCell(new PdfPCell(new Phrase(special_skill, cni)) { Border = Rectangle.NO_BORDER });
+            cell = new PdfPCell(healthInfoRow3); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+            table.AddCell(cell);
+
+            //Line
+            table.AddCell(" "); //table.AddCell(" ");
+            //Line
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
+
+            //new paragraph
+            cell = new PdfPCell(new Phrase("ข้อมูลสถานที่ทำงาน", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+            if (work.Count > 0)
+            {
+                for (var i = 0; i < work.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(3);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER; rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.TotalWidth = 400f; rowz.LockedWidth = true;
+                    rowz.SetWidths(new float[] { 8f,40f, 150f });
+                    rowz.AddCell(new PdfPCell(new Phrase(work[i].rec_no+".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("ชื่อสถานที่ทำงาน", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(work[i].company, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+
+                    if(i == 0)
+                    {
+                        cell = new PdfPCell(new Phrase("และประวัติการทำงาน", cnb));
+                        cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+                        table.AddCell(cell);
+                    }
+                    else
+                    {
+                        table.AddCell("");
+                    }
+
+                    rowz = new PdfPTable(5);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER; rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.TotalWidth = 400f; rowz.LockedWidth = true;
+                    rowz.SetWidths(new float[] { 8f,20f,90f, 25f,40f });
+                    rowz.AddCell("  ");
+                    rowz.AddCell(new PdfPCell(new Phrase("ตำแหน่ง", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(work[i].position, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("ปีที่ทำงาน", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(work[i].year, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+
+                    rowz = new PdfPTable(3);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER; rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.TotalWidth = 400f; rowz.LockedWidth = true;
+                    rowz.SetWidths(new float[] { 10f, 18f, 200f});
+                    rowz.AddCell(new PdfPCell(new Phrase(" ", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase("ที่อยู่", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(work[i].address, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
+
+
+
+
 
             document.Add(table);
             document.Close();
