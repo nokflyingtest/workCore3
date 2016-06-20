@@ -14,5 +14,6 @@ gmail
 
                 SmtpServer.Send(mail);
 
-Visit this page https://accounts.google.com/DisplayUnlockCaptcha and click on button to allow access.
-Visit this page https://www.google.com/settings/security/lesssecureapps and enable access for less secure apps.
+1. Visit this page https://accounts.google.com/DisplayUnlockCaptcha and click on button to allow access.
+2. Visit this page https://www.google.com/settings/security/lesssecureapps and enable access for less secure apps.
+3. try to change password more secure
