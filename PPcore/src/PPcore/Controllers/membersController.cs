@@ -262,6 +262,7 @@ namespace PPcore.Controllers
             Font cn = new Font(bf, 16);
             Font cnb = new Font(bf, 16, Font.BOLD);
             Font cni = new Font(bf, 16, Font.ITALIC);
+            Font cng = new Font(bf, 16, Font.NORMAL, BaseColor.GRAY);
 
             document.Open();
             document.Add(rect);
@@ -808,7 +809,43 @@ namespace PPcore.Controllers
             workStream.Write(byteInfo, 0, byteInfo.Length);
             workStream.Position = 0;
 
-            return new FileStreamResult(workStream, "application/pdf");
+            PdfReader prr = new PdfReader(workStream);
+            byte[] byteRes;
+            using (MemoryStream ms2 = new MemoryStream())
+            {
+                using (PdfStamper stamper = new PdfStamper(prr, ms2, '\0', true))
+                {
+                    int n = prr.NumberOfPages; PdfPTable ptable; PdfContentByte cb;
+                    for (int i = 1; i <= n; i++)
+                    {
+                        ptable = new PdfPTable(2);
+                        ptable.TotalWidth = 530f;
+                        ptable.LockedWidth = true;
+                        ptable.DefaultCell.FixedHeight = 20;
+                        ptable.DefaultCell.Border = Rectangle.NO_BORDER;
+                        ptable.DefaultCell.VerticalAlignment = 1;
+                        ptable.SetWidths(new float[] { 300f, 230f });
+                        ptable.AddCell(new PdfPCell(new Phrase("Printed by: (Admin) Somsak Saelim Printed date: ", cng)) { Border = Rectangle.NO_BORDER });
+                        ptable.AddCell(new PdfPCell(new Phrase(string.Format("Page {0} of {1}", i, n), cng)) { Border = Rectangle.NO_BORDER, HorizontalAlignment = 2 });
+                        cb = stamper.GetOverContent(i);
+                        ptable.WriteSelectedRows(0, -1, 34, 33, cb);
+                        if (i > 1)
+                        {
+                            Rectangle recta = new Rectangle(30, 36, 565, 806);
+                            recta.Border = Rectangle.BOX;
+                            recta.BorderColor = BaseColor.DARK_GRAY;
+                            recta.BorderWidth = 1f;
+                            cb.Rectangle(recta);
+                            cb.Stroke();
+                        }
+                    }
+                }
+                byteRes = ms2.ToArray();
+            }
+
+            MemoryStream mems = new MemoryStream(byteRes);
+
+            return new FileStreamResult(mems, "application/pdf");
         }
 
         // GET: members/Create
