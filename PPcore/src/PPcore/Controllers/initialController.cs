@@ -37,13 +37,13 @@ namespace PPcore.Controllers
             _context.Database.ExecuteSqlCommand("INSERT INTO mem_status (mstatus_code,mstatus_desc,id,x_status) VALUES ('2',N'หมดอายุ',newid(),'Y')");
             _context.Database.ExecuteSqlCommand("INSERT INTO mem_status (mstatus_code,mstatus_desc,id,x_status) VALUES ('3',N'กำลังดำเนินการต่ออายุ',newid(),'Y')");
 
-            /**
+            
 
             _context.Database.ExecuteSqlCommand("INSERT[ini_country] ([country_code], [country_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(66, N'ไทย', NULL, NULL, NULL, NULL, N'865c24b0-0b06-4b4a-a9cf-aeb6053a456e')");
             _context.Database.ExecuteSqlCommand("INSERT[ini_country] ([country_code], [country_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(84, N'เวียดนาม', NULL, NULL, NULL, NULL, N'746e95e2-abc3-4d39-99e7-61e319524b1d')");
             _context.Database.ExecuteSqlCommand("INSERT[ini_country] ([country_code], [country_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(856, N'ลาว', NULL, NULL, NULL, NULL, N'fbc45ae4-8134-4f58-a6b1-de8967d6a3b7')");
 
-
+            /**
 _context.Database.ExecuteSqlCommand("INSERT[ini_province] ([country_code], [province_code], [pro_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(66, N'10000000', N'กรุงเทพมหานคร', NULL, NULL, NULL, NULL, N'67e7dc9e-5dde-41d0-b755-b8dfdd5a19b5')");
 _context.Database.ExecuteSqlCommand("INSERT[ini_province] ([country_code], [province_code], [pro_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(66, N'11000000', N'สมุทรปราการ', NULL, NULL, NULL, NULL, N'9d05e13b-6aa4-4a14-ae9f-3c1845bb1fd1')");
 _context.Database.ExecuteSqlCommand("INSERT[ini_province] ([country_code], [province_code], [pro_desc], [area_part], [x_status], [x_note], [x_log], [id]) VALUES(66, N'12000000', N'นนทบุรี', NULL, NULL, NULL, NULL, N'd2b46d3a-e3c8-4d26-a160-43ae0b0e221e')");

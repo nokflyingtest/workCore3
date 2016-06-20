@@ -311,13 +311,13 @@
                                     <div class="row">
                                         <div class="col-md-2 text-right"><label asp-for="mobile" class="control-label"></label></div>
                                         <div class="col-md-4">
-                                            <input asp-for="mobile" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32) || (event.charCode == 45)" />
+                                            <input asp-for="mobile" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) " /> @*|| (event.charCode == 32) || (event.charCode == 45)*@
                                             <span asp-validation-for="mobile" class="text-danger" />
                                         </div>
                                         <div class="col-md-2 text-right"><label asp-for="tel" class="control-label"></label></div>
                                         <div class="col-md-4">
-                                            <input asp-for="tel" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32) || (event.charCode == 45)" />
-                                            <span asp-validation-for="tel" class="text-danger" />
+                                            <input asp-for="tel" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) " /> @*|| (event.charCode == 32) || (event.charCode == 45)
+                                            <span asp-validation-for="tel" class="text-danger" />*@
                                         </div>
                                     </div>
                                 </div>
@@ -325,7 +325,7 @@
                                     <div class="row">
                                         <div class="col-md-2 text-right"><label asp-for="fax" class="control-label"></label></div>
                                         <div class="col-md-4">
-                                            <input asp-for="fax" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32) || (event.charCode == 45)" />
+                                            <input asp-for="fax" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />  @*|| (event.charCode == 32) || (event.charCode == 45)*@
                                             <span asp-validation-for="fax" class="text-danger" />
                                         </div>
                                         <div class="col-md-2 text-right"><label asp-for="social_app_data" class="control-label"></label></div>

@@ -92,6 +92,34 @@ namespace PPcore.Controllers
             return View(member);
         }
 
+        private string formatTelNumber(string tel)
+        {
+            var result = "";
+            if (tel != null)
+            {
+                if ((tel.Count() == 9) && (tel.Substring(0, 2) == "02"))
+                {
+                    result = "02-" + tel.Substring(2, 3) + "-" + new String('X', tel.Substring(5).Count());
+                }
+                else if ((tel.Count() == 10) && (tel.Substring(0, 2) == "08"))
+                {
+                    result = "08-" + tel.Substring(2, 4) + "-" + new String('X', tel.Substring(6).Count());
+                }
+                else if(tel.Count() == 9)
+                {
+                    result = tel.Substring(0, 3) + "-" + tel.Substring(3, 3) + "-" + new String('X', tel.Substring(6).Count());
+                }
+                else
+                {
+                    result = tel;
+                }
+            }
+            else
+            {
+                result = "";
+            }
+            return result;
+        }
         // GET: members/DetailsPdf/5
         public FileStreamResult DetailsPdf(String id)
         {
@@ -114,36 +142,94 @@ namespace PPcore.Controllers
             var marry_status = m.marry_status == "N"? "โสด" :"สมรส";
 
             var religion = m.religion;
-            var tel = m.tel != null ? m.tel.Substring(0,1) : "";
-            var mobile = m.mobile;
-            var fax = m.fax; var email = m.email;
+            var tel = formatTelNumber(m.tel);
+            var mobile = formatTelNumber(m.mobile);
+            var fax = formatTelNumber(m.fax);
+            var email = m.email;
             var social_app_data = m.social_app_data;
             var text_address = m.texta_address + " " + m.textb_address + " " + m.textc_address;
 
+            var count = 0;
+
             List<listTraining> train = new List<listTraining>();
-            train.Add(new listTraining { rec_no = "1", code = "10110", desc = "การแปรรูปผลิตภัณฑ์", grade = "Good" });
+            List<mem_train_record> mtrs = _context.mem_train_record.Where(mtr => (mtr.member_code == m.member_code) && (mtr.x_status == "Y")).OrderBy(mtr => mtr.course_code).ToList();
+            foreach (mem_train_record mtr in mtrs)
+            {
+                project_course pc = _context.project_course.SingleOrDefault(p => p.course_code == mtr.course_code);
+                course_grade cg = _context.course_grade.SingleOrDefault(c => c.cgrade_code == mtr.course_grade);
+                count++;
+                train.Add(new listTraining { rec_no = count.ToString(), code = mtr.course_code, desc = pc.course_desc, grade = cg.cgrade_desc });
+            }
 
             List<listInfo> visit = new List<listInfo>();
-            visit.Add(new listInfo { rec_no = "1", desc = "โครงการดูงานการส่งออกสินค้าต่างประเทศ ที่ประเทศมาเลเซีย" });
+            List<mem_site_visit> msvs = _context.mem_site_visit.Where(msv => (msv.member_code == m.member_code) && (msv.x_status == "Y")).OrderBy(msv => msv.rec_no).ToList();
+            foreach (mem_site_visit msv in msvs)
+            {
+                ini_country ic = _context.ini_country.SingleOrDefault(c => c.country_code == msv.country_code);
+                visit.Add(new listInfo { rec_no = msv.rec_no.ToString(), desc = msv.site_visit_desc + " ที่ประเทศ " + ic.country_desc});
+            }
+            
 
             List<listInfo> social = new List<listInfo>();
-            social.Add(new listInfo { rec_no = "1", desc = "ปลูกป่าที่จังหวัดเชียงใหม่" });
-            social.Add(new listInfo { rec_no = "2", desc = "ให้ความรู้เกี่ยวกับการเกษตรแบบเศรษฐกิจพอเพียงให้กับศูนย์ส่งเสริมการเกษตร จังหวัดน่าน" });
+            List<mem_social> mss = _context.mem_social.Where(ms => (ms.member_code == m.member_code) && (ms.x_status =="Y")).OrderBy(ms => ms.rec_no).ToList();
+            foreach (mem_social ms in mss)
+            {
+                social.Add(new listInfo { rec_no = ms.rec_no.ToString(), desc = ms.social_desc });
+            }
 
             List<listInfo> reward = new List<listInfo>();
-            reward.Add(new listInfo { rec_no = "1", desc = "รางวัลโครงการผู้นำตัวอย่างเศรษฐกิจพอเพียง ปี พ.ศ.2558" });
+            List<mem_reward> mrs = _context.mem_reward.Where(mr => (mr.member_code == m.member_code) && (mr.x_status == "Y")).OrderBy(mr => mr.rec_no).ToList();
+            foreach (mem_reward mr in mrs)
+            {
+                reward.Add(new listInfo { rec_no = mr.rec_no.ToString(), desc = mr.reward_desc });
+            }
 
             List<listInfo> education = new List<listInfo>();
-            education.Add(new listInfo { rec_no = "1", desc = "ระดับมัธยมศึกษา โรงเรียนหอการค้า สาขาพาณิชยกรรม" });
-            education.Add(new listInfo { rec_no = "2", desc = "ระดับอุดมศึกษา มหาวิทยาลัยสุโขทัยธรรมมาธิราช สาขาการเกษตร" });
+            List<mem_education> mes = _context.mem_education.Where(me => (me.member_code == m.member_code) && (me.x_status == "Y")).OrderBy(me => me.rec_no).ToList();
+            foreach (mem_education me in mes)
+            {
+                var level = String.IsNullOrEmpty(me.degree) ? "" : "ระดับ " + me.degree + " ";
+                var fct = String.IsNullOrEmpty(me.faculty) ? "" : " สาขา/วิชาเอก " + me.faculty;
+                education.Add(new listInfo { rec_no = me.rec_no.ToString(), desc = level + me.colledge_name + fct });
+            }
 
-            var medical_history = "หอบหืด"; var blood_group = "โอ"; var restrict_food = "อาหารทะเล";
-            var hobby = "เพาะพันธุ์กล้วยไม้"; var special_skill = "เพาะพันธุ์กล้วยไม้หายาก";
+            mem_health mh = _context.mem_health.SingleOrDefault(mhr => mhr.member_code == m.member_code);
+            var medical_history = ""; var blood_group = ""; var restrict_food = "";
+            var hobby = ""; var special_skill = "";
+            if (mh != null)
+            {
+                medical_history = mh.medical_history; blood_group = mh.blood_group; restrict_food = mh.restrict_food;
+                hobby = mh.hobby; special_skill = mh.special_skill;
+            }
 
             List<listWork> work = new List<listWork>();
-            work.Add(new listWork { rec_no = "1", company = "บริษัท เกษตรพัฒนา (Kasadpattana Co.,Ltd.)", position = "วิทยากร (Lecturer)", year = "พ.ศ.2559", address = "55/621 โครงการสุโขทัย อเวนิว 99 ถ.บอนด์สตรีท ต.บางพูด อ.ปากเกร็ด จ.นนทบุรี 11120" });
+            List<mem_worklist> mwls = _context.mem_worklist.Where(mwl => (mwl.member_code == m.member_code) && (mwl.x_status == "Y")).OrderBy(mwl => mwl.rec_no).ToList();
+            foreach(mem_worklist mwl in mwls)
+            {
+                var comeng = String.IsNullOrEmpty(mwl.company_name_eng) ? "" : " (" + mwl.company_name_eng + ")";
+                var poseng = String.IsNullOrEmpty(mwl.position_name_eng) ? "" : " ("+ mwl.position_name_eng +")";
+                work.Add(new listWork { rec_no = mwl.rec_no.ToString(), company = mwl.company_name_th + comeng, position = mwl.position_name_th + poseng, year = mwl.work_year, address = mwl.office_address });
+            }
 
+            //List<listProduct> product = new List<listProduct>();
+            //List<mem_product> mpds = _context.mem_product.Where(mp => (mp.member_code == m.member_code) && (mp.x_status == "Y")).OrderBy(mp => mp.rec_no).ToList();
+            //foreach (mem_product mpd in mpds)
+            //{
+            //    product prod = _context.product.SingleOrDefault(p => p.product_code == mpd.product_code);
+            //    product_group prodG = _context.product_group.SingleOrDefault(p => p.product_group_code == prod.product_group_code);
+            //    product_type prodT = _context.product_type.SingleOrDefault(p => p.product_type_code == prod.product_type_code);
+            //    product.Add(new listProduct { rec_no = mpd.rec_no.ToString(), productGroup = prodG.product_group_desc, productType = prodT.product_type_desc, productDesc = prod.product_desc});
+            //}
 
+            List<listInfo> product = new List<listInfo>();
+            List<mem_product> mpds = _context.mem_product.Where(mp => (mp.member_code == m.member_code) && (mp.x_status == "Y")).OrderBy(mp => mp.rec_no).ToList();
+            foreach (mem_product mpd in mpds)
+            {
+                product prod = _context.product.SingleOrDefault(p => p.product_code == mpd.product_code);
+                product_group prodG = _context.product_group.SingleOrDefault(p => p.product_group_code == prod.product_group_code);
+                product_type prodT = _context.product_type.SingleOrDefault(p => (p.product_type_code == prod.product_type_code) && (p.product_group_code == prod.product_group_code));
+                product.Add(new listInfo { rec_no = mpd.rec_no.ToString(), desc = "กลุ่มผลิตผล " + prodG.product_group_desc + " ประเภทผลิตผล " + prodT.product_type_desc + " ผลิตผล " + prod.product_desc });
+            }
 
             MemoryStream workStream = new MemoryStream();
             Document document = new Document(PageSize.A4, 25, 25, 50, 30);
@@ -338,17 +424,23 @@ namespace PPcore.Controllers
                     rowz.DefaultCell.VerticalAlignment = 1;
                     rowz.TotalWidth = 400f; rowz.LockedWidth = true;
                     rowz.SetWidths(new float[] { 8f, 12f, 30f, 22f, 70f, 27f, 40f });
-                    rowz.AddCell(new PdfPCell(new Phrase(train[0].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase("รหัส", cnb)) { Border = Rectangle.NO_BORDER });
-                    rowz.AddCell(new PdfPCell(new Phrase(train[0].code, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[i].code, cni)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase("หลักสูตร", cnb)) { Border = Rectangle.NO_BORDER });
-                    rowz.AddCell(new PdfPCell(new Phrase(train[0].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[i].desc, cni)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase("ระดับเกรด", cnb)) { Border = Rectangle.NO_BORDER });
-                    rowz.AddCell(new PdfPCell(new Phrase(train[0].grade, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(train[i].grade, cni)) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
                 }
+            }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
             }
 
             //Line
@@ -380,12 +472,18 @@ namespace PPcore.Controllers
                     rowz.LockedWidth = true;
                     rowz.DefaultCell.VerticalAlignment = 1;
                     rowz.SetWidths(new float[] { 8f, 180f });
-                    rowz.AddCell(new PdfPCell(new Phrase(visit[0].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
-                    rowz.AddCell(new PdfPCell(new Phrase(visit[0].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(visit[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(visit[i].desc, cni)) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
                 }
+            }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
             }
 
             //Line
@@ -424,6 +522,13 @@ namespace PPcore.Controllers
                     table.AddCell("");
                 }
             }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
+            }
+
 
             //Line
             line = new PdfPTable(3);
@@ -461,6 +566,12 @@ namespace PPcore.Controllers
                     table.AddCell("");
                 }
             }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
+            }
 
             //Line
             line = new PdfPTable(3);
@@ -497,6 +608,12 @@ namespace PPcore.Controllers
                     table.AddCell(cell);
                     table.AddCell("");
                 }
+            }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
             }
 
             //Line
@@ -634,9 +751,54 @@ namespace PPcore.Controllers
                     table.AddCell("");
                 }
             }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
+            }
 
 
+            //Line
+            line = new PdfPTable(3);
+            line.DefaultCell.Border = Rectangle.NO_BORDER;
+            line.DefaultCell.FixedHeight = 1f;
+            line.SpacingBefore = 10f;
+            line.TotalWidth = 400f;
+            line.LockedWidth = true;
+            line.SetWidths(new float[] { 5f, 295f, 15f });
+            line.AddCell("");
+            cell = new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER, FixedHeight = 1f };
+            cell.BorderWidthTop = 1f;
+            line.AddCell(cell);
+            line.AddCell("");
+            table.AddCell(line);
 
+            //new paragraph
+            cell = new PdfPCell(new Phrase("ผลิตผลในครัวเรือน", cnb));
+            cell.HorizontalAlignment = 2; cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+            if (product.Count > 0)
+            {
+                for (var i = 0; i < product.Count; i++)
+                {
+                    PdfPTable rowz = new PdfPTable(2);
+                    rowz.DefaultCell.Border = Rectangle.NO_BORDER; rowz.DefaultCell.VerticalAlignment = 1;
+                    rowz.TotalWidth = 400f; rowz.LockedWidth = true;
+                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.AddCell(new PdfPCell(new Phrase(product[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(product[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                    table.AddCell(cell);
+                    table.AddCell("");
+                }
+            }
+            else
+            {
+                cell = new PdfPCell(new Phrase(" ", cni)) { Border = Rectangle.NO_BORDER }; cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
+                table.AddCell(cell);
+                table.AddCell("");
+            }
 
 
             document.Add(table);
@@ -952,6 +1114,13 @@ namespace PPcore.Controllers
             public string position { get; set; }
             public string year { get; set; }
             public string address { get; set; }
+        }
+        private class listProduct
+        {
+            public string rec_no { get; set; }
+            public string productGroup { get; set; }
+            public string productType { get; set; }
+            public string productDesc { get; set; }
         }
     }
 
