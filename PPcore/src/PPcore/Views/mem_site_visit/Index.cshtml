@@ -32,7 +32,7 @@
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.mem_site_visit.rec_no)</th>
-                        <th>@Html.DisplayNameFor(model => model.mem_site_visit.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.mem_site_visit.id)</th>
                         <th>@Html.DisplayNameFor(model => model.mem_site_visit.site_visit_desc)</th>
                         <th>@Html.DisplayNameFor(model => model.country_desc)</th>
                     </tr>
@@ -44,7 +44,7 @@
                         countOrder++;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.mem_site_visit.rec_no)</td>
-                            <td>@Html.DisplayFor(modelItem => item.mem_site_visit.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.mem_site_visit.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.mem_site_visit.site_visit_desc)</td>
                             <td>@Html.DisplayFor(modelItem => item.country_desc)</td>
                         </tr>
