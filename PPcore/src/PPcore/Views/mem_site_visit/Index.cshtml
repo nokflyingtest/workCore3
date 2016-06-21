@@ -95,7 +95,7 @@
             $('#btnCreate').on('click', function () {
                 $('#mem_site_visitModalLabel').text('เพิ่มประวัติการดูงาน');
                 $('#mem_site_visitSubmit').html('บันทึก');
-                $("#mem_site_visit_rec_no").prop('disabled', false);
+                //$("#mem_site_visit_rec_no").prop('disabled', false);
                 $("#mem_site_visit_site_visit_desc").prop('disabled', false);
                 $("#mem_site_visit_country_code").prop('disabled', false);
                 $("#mem_site_visitSubmit").click(function (e) {
@@ -106,7 +106,7 @@
                         url: "@Url.Action("Create", "mem_site_visit")",
                         data: {
                             memberId: "@ViewBag.memberId",
-                            rec_no: $("#mem_site_visit_rec_no").val(),
+                            //rec_no: $("#mem_site_visit_rec_no").val(),
                             site_visit_desc: $("#mem_site_visit_site_visit_desc").val(),
                             country_code: $("#mem_site_visit_country_code").val()
                         },

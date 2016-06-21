@@ -30,7 +30,7 @@
                 <thead>
                     <tr>
                         <th>ลำดับ</th>
-                        <th>@Html.DisplayNameFor(model => model.mem_train_record.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.mem_train_record.id)</th>
                         <th>@Html.DisplayNameFor(model => model.mem_train_record.course_code)</th>
                         <th>@Html.DisplayNameFor(model => model.project_course.course_desc)</th>
                         <th>@Html.DisplayNameFor(model => model.mem_train_record.course_grade)</th>
@@ -43,7 +43,7 @@
                         countOrder++;
                         <tr>
                             <td>@countOrder</td>
-                            <td>@Html.DisplayFor(modelItem => item.mem_train_record.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.mem_train_record.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.mem_train_record.course_code)</td>
                             <td>@Html.DisplayFor(modelItem => item.project_course.course_desc)</td>
                             <td>@Html.DisplayFor(modelItem => item.cgrade_desc)</td>

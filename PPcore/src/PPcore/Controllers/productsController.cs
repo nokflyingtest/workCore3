@@ -51,7 +51,7 @@ namespace PPcore.Controllers
                     cProd = cProd.Where(pr => pr.product_desc.Contains(pattern));
                 }
             }
-            var products = cProd.ToList();
+            var products = cProd.OrderBy(pr => pr.rec_no).ToList();
             if (products == null)
             {
                 return NotFound();

@@ -1,4 +1,23 @@
-﻿-- product
+﻿-- mem_site_visit
+  
+IF OBJECT_ID(N'mem_site_visit_Insert', N'TR') IS NOT NULL
+    exec sp_executesql N'DROP TRIGGER mem_site_visit_Insert';
+GO
+
+CREATE TRIGGER mem_site_visit_Insert ON mem_site_visit 
+INSTEAD OF INSERT 
+AS
+BEGIN
+	DECLARE @maxi int;
+	SELECT TOP 1 @maxi = rec_no FROM mem_site_visit WHERE member_code = (SELECT member_code FROM Inserted) ORDER BY rec_no DESC;
+	INSERT INTO mem_site_visit ([member_code], [country_code], [site_visit_desc], [rec_no], [x_status], [x_note], [x_log], [id])
+	SELECT [member_code], [country_code], [site_visit_desc], IsNull(@maxi, 0 ) + 1, [x_status], [x_note], [x_log], [id]
+	FROM Inserted;
+END;
+
+GO
+
+-- product
   
 IF OBJECT_ID(N'product_Insert', N'TR') IS NOT NULL
     exec sp_executesql N'DROP TRIGGER product_Insert';

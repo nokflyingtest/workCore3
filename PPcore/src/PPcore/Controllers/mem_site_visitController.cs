@@ -4,6 +4,8 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using PPcore.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace PPcore.Controllers
 {
@@ -58,20 +60,31 @@ namespace PPcore.Controllers
 
         // POST: mem_site_visit/Create
         [HttpPost]
-        public IActionResult Create(string memberId, int rec_no, string site_visit_desc, int country_code)
+        public IActionResult Create(string memberId, string site_visit_desc, int country_code)
         {
             var member = _context.member.Single(m => m.id == new Guid(memberId));
-
-            var mem_site_visit = new mem_site_visit();
-            //need to change logic for primaru key rec_no
-            mem_site_visit.rec_no = rec_no;
-            mem_site_visit.member_code = member.member_code;
-            mem_site_visit.site_visit_desc = site_visit_desc;
-            mem_site_visit.country_code = country_code;
-            mem_site_visit.x_status = "Y";
-
-            _context.mem_site_visit.Add(mem_site_visit);
-            _context.SaveChanges();
+            try
+            { 
+                _context.Database.ExecuteSqlCommand("INSERT INTO mem_site_visit (rec_no,member_code,country_code,site_visit_desc,x_status) VALUES (0,'"+member.member_code+"','"+ country_code + "','"+ site_visit_desc + "','Y')");
+            }
+            catch (SqlException ex)
+            {
+                var errno = ex.Number; var msg = "";
+                if (errno == 2627) //Violation of primary key. Handle Exception
+                {
+                    msg = "???";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
+            catch (Exception ex)
+            {
+                var errno = ex.HResult; var msg = "";
+                if (ex.InnerException.Message.IndexOf("PRIMARY KEY") != -1)
+                {
+                    msg = "???";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
 
             return Json(new { result = "success" });
         }

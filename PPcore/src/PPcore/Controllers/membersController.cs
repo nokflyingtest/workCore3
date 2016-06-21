@@ -259,10 +259,10 @@ namespace PPcore.Controllers
 
             var fontPath = Path.Combine(_env.WebRootPath, "fonts/THSarabunNew.ttf");
             BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font cn = new Font(bf, 16);
-            Font cnb = new Font(bf, 16, Font.BOLD);
-            Font cni = new Font(bf, 16, Font.ITALIC);
-            Font cng = new Font(bf, 16, Font.NORMAL, BaseColor.GRAY);
+            Font cn = new Font(bf, 14);
+            Font cnb = new Font(bf, 14, Font.BOLD);
+            Font cni = new Font(bf, 14, Font.ITALIC);
+            Font cng = new Font(bf, 14, Font.NORMAL, BaseColor.GRAY);
 
             document.Open();
             document.Add(rect);
