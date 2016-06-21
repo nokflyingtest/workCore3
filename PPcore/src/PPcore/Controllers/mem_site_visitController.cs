@@ -65,7 +65,7 @@ namespace PPcore.Controllers
             var member = _context.member.Single(m => m.id == new Guid(memberId));
             try
             { 
-                _context.Database.ExecuteSqlCommand("INSERT INTO mem_site_visit (rec_no,member_code,country_code,site_visit_desc,x_status) VALUES (0,'"+member.member_code+"','"+ country_code + "','"+ site_visit_desc + "','Y')");
+                _context.Database.ExecuteSqlCommand("INSERT INTO mem_site_visit (rec_no,member_code,country_code,site_visit_desc,x_status) VALUES (0,'"+member.member_code+"','"+ country_code + "',N'"+ site_visit_desc + "','Y')");
             }
             catch (SqlException ex)
             {
