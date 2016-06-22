@@ -99,9 +99,16 @@
                 $("#mem_train_record_course_code").prop('disabled', false);
                 $("#project_course_course_desc").prop('disabled', false);
                 $("#mem_train_record_course_grade").prop('disabled', false);
-                $("#mem_train_recordSubmit").click(function (e) {
+                $("#mem_train_recordSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
+                    if ($("#mem_train_record_course_code").val() == "") {
+                        $("#course_code_msg").text("กรุณากรอกข้อมูล");
+                    } else { $("#course_code_msg").text(""); }
+                    if ($("#project_course_course_desc").val() == "") {
+                        $("#course_desc_msg").text("กรุณากรอกข้อมูล");
+                    } else { $("#course_desc_msg").text(""); }
+
+                    @*$.ajax({
                         async:false,
                         type: "POST",
                         url: "@Url.Action("Create","mem_train_record")",
@@ -114,7 +121,8 @@
                         success: function (data) {
                             window.location.href = "@Url.Action("Index", "mem_train_record", new {memberId = ViewBag.memberId})";
                         }
-                    });
+                    });*@
+
                 });
                 $('#mem_train_recordModal').modal({ backdrop: 'static', keyboard: false });
             });
@@ -134,7 +142,7 @@
                         $("#mem_train_record_course_code").prop('disabled', false);
                         $("#project_course_course_desc").prop('disabled', false);
                         $("#mem_train_record_course_grade").prop('disabled', false);
-                        $("#mem_train_recordSubmit").click(function (e) {
+                        $("#mem_train_recordSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
                             $.ajax({
                                 type: "POST",
