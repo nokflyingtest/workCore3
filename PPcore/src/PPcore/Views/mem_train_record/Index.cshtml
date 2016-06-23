@@ -101,28 +101,22 @@
                 $("#mem_train_record_course_grade").prop('disabled', false);
                 $("#mem_train_recordSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    if ($("#mem_train_record_course_code").val() == "") {
-                        $("#course_code_msg").text("กรุณากรอกข้อมูล");
-                    } else { $("#course_code_msg").text(""); }
-                    if ($("#project_course_course_desc").val() == "") {
-                        $("#course_desc_msg").text("กรุณากรอกข้อมูล");
-                    } else { $("#course_desc_msg").text(""); }
-
-                    @*$.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create","mem_train_record")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            course_code: $("#mem_train_record_course_code").val(),
-                            course_desc: $("#project_course_course_desc").val(),
-                            course_grade: $("#mem_train_record_course_grade").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_train_record", new {memberId = ViewBag.memberId})";
-                        }
-                    });*@
-
+                    if ($("#mem_train_recordForm").valid()) {
+                        $.ajax({
+                            async:false,
+                            type: "POST",
+                            url: "@Url.Action("Create","mem_train_record")",
+                                data: {
+                                memberId: "@ViewBag.memberId",
+                                course_code: $("#mem_train_record_course_code").val(),
+                                course_desc: $("#project_course_course_desc").val(),
+                                course_grade: $("#mem_train_record_course_grade").val()
+                                },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_train_record", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
                 $('#mem_train_recordModal').modal({ backdrop: 'static', keyboard: false });
             });

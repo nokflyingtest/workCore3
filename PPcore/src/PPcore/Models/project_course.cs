@@ -10,6 +10,7 @@ namespace PPcore.Models
         public string ctype_code { get; set; }
         public string cgroup_code { get; set; }
         [Display(Name = "ชื่อ หลักสูตรอบรม")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string course_desc { get; set; }
         public DateTime? course_date { get; set; }
         public DateTime? course_approve_date { get; set; }

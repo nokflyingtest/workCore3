@@ -6,6 +6,7 @@ namespace PPcore.Models
     public partial class mem_train_record
     {
         [Display(Name = "รหัสหลักสูตรอบรม")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string course_code { get; set; }
         public string member_code { get; set; }
         [Display(Name = "ระดับเกรด")]
