@@ -98,23 +98,27 @@
                 //$("#mem_site_visit_rec_no").prop('disabled', false);
                 $("#mem_site_visit_site_visit_desc").prop('disabled', false);
                 $("#mem_site_visit_country_code").prop('disabled', false);
-                $("#mem_site_visitSubmit").click(function (e) {
+                $("#mem_site_visitSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create", "mem_site_visit")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            //rec_no: $("#mem_site_visit_rec_no").val(),
-                            site_visit_desc: $("#mem_site_visit_site_visit_desc").val(),
-                            country_code: $("#mem_site_visit_country_code").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_site_visit", new {memberId = ViewBag.memberId})";
-                        }
-                    });
+                    if ($("#mem_site_visitForm").valid()) {
+                        $.ajax({
+                            async: false,
+                            type: "POST",
+                            url: "@Url.Action("Create", "mem_site_visit")",
+                            data: {
+                                memberId: "@ViewBag.memberId",
+                                //rec_no: $("#mem_site_visit_rec_no").val(),
+                                site_visit_desc: $("#mem_site_visit_site_visit_desc").val(),
+                                country_code: $("#mem_site_visit_country_code").val()
+                            },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_site_visit", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
+                $("#mem_site_visit_site_visit_desc").val('');
+                $("#mem_site_visitForm").clearValidation();
                 $('#mem_site_visitModal').modal({ backdrop: 'static', keyboard: false });
             });
 
@@ -133,7 +137,7 @@
                         $("#mem_site_visit_rec_no").prop('disabled', true);
                         $("#mem_site_visit_site_visit_desc").prop('disabled', false);
                         $("#mem_site_visit_country_code").prop('disabled', false);
-                        $("#mem_site_visitSubmit").click(function (e) {
+                        $("#mem_site_visitSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
                             $.ajax({
                                 type: "POST",
@@ -150,6 +154,7 @@
                                 }
                             });
                         });
+                        $("#mem_site_visitForm").clearValidation();
                         $('#mem_site_visitModal').modal({ backdrop: 'static', keyboard: false });
                     }
                 });

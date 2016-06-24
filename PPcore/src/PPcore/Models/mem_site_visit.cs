@@ -11,6 +11,7 @@ namespace PPcore.Models
         [Display(Name = "ลำดับ")]
         public int rec_no { get; set; }
         [Display(Name = "ชื่อ / คำอธิบาย")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string site_visit_desc { get; set; }
         [Display(Name = "ประเทศ")]
         public int? country_code { get; set; }
