@@ -32,7 +32,7 @@
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.rec_no)</th>
-                        <th>@Html.DisplayNameFor(model => model.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.id)</th>
                         <th>@Html.DisplayNameFor(model => model.company_name_th)</th>
                         <th>@Html.DisplayNameFor(model => model.company_name_eng)</th>
                         <th>@Html.DisplayNameFor(model => model.position_name_th)</th>
@@ -42,13 +42,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @{ var countOrder = 0;}
                     @foreach (var item in Model)
                     {
-                        countOrder++;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.rec_no)</td>
-                            <td>@Html.DisplayFor(modelItem => item.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.company_name_th)</td>
                             <td>@Html.DisplayFor(modelItem => item.company_name_eng)</td>
                             <td>@Html.DisplayFor(modelItem => item.position_name_th)</td>
@@ -110,27 +108,35 @@
                 $("#position_name_eng").prop('disabled', false);
                 $("#work_year").prop('disabled', false);
                 $("#office_address").prop('disabled', false);
-                $("#mem_worklistSubmit").click(function (e) {
+                $("#mem_worklistSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create", "mem_worklist")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            rec_no: $("#rec_no").val(),
-                            company_name_th: $("#company_name_th").val(),
-                            company_name_eng: $("#company_name_eng").val(),
-                            position_name_th: $("#position_name_th").val(),
-                            position_name_eng: $("#position_name_eng").val(),
-                            work_year: $("#work_year").val(),
-                            office_address: $("#office_address").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_worklist", new {memberId = ViewBag.memberId})";
-                        }
-                    });
+                    if ($("#mem_worklistForm").valid()) {
+                        $.ajax({
+                            async: false,
+                            type: "POST",
+                            url: "@Url.Action("Create", "mem_worklist")",
+                            data: {
+                                memberId: "@ViewBag.memberId",
+                                company_name_th: $("#company_name_th").val(),
+                                company_name_eng: $("#company_name_eng").val(),
+                                position_name_th: $("#position_name_th").val(),
+                                position_name_eng: $("#position_name_eng").val(),
+                                work_year: $("#work_year").val(),
+                                office_address: $("#office_address").val()
+                            },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_worklist", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
+                $("#company_name_th").val('');
+                $("#company_name_eng").val('');
+                $("#position_name_th").val('');
+                $("#position_name_eng").val('');
+                $("#work_year").val('');
+                $("#office_address").val('');
+                $("#mem_worklistForm").clearValidation();
                 $('#mem_worklistModal').modal({ backdrop: 'static', keyboard: false });
             });
 
@@ -157,27 +163,30 @@
                         $("#position_name_eng").prop('disabled', false);
                         $("#work_year").prop('disabled', false);
                         $("#office_address").prop('disabled', false);
-                        $("#mem_worklistSubmit").click(function (e) {
+                        $("#mem_worklistSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
-                            $.ajax({
-                                type: "POST",
-                                data: {
-                                    id: datarow[1],
-                                    memberId: "@ViewBag.memberId",
-                                    rec_no: $("#rec_no").val(),
-                                    company_name_th: $("#company_name_th").val(),
-                                    company_name_eng: $("#company_name_eng").val(),
-                                    position_name_th: $("#position_name_th").val(),
-                                    position_name_eng: $("#position_name_eng").val(),
-                                    work_year: $("#work_year").val(),
-                                    office_address: $("#office_address").val()
-                                },
-                                url: "@Url.Action("Edit", "mem_worklist")",
-                                success: function (data) {
-                                    window.location.href = "@Url.Action("Index", "mem_worklist", new {memberId = ViewBag.memberId})";
-                                }
-                            });
+                            if ($("#mem_worklistForm").valid()) {
+                                $.ajax({
+                                    type: "POST",
+                                    data: {
+                                        id: datarow[1],
+                                        memberId: "@ViewBag.memberId",
+                                        rec_no: $("#rec_no").val(),
+                                        company_name_th: $("#company_name_th").val(),
+                                        company_name_eng: $("#company_name_eng").val(),
+                                        position_name_th: $("#position_name_th").val(),
+                                        position_name_eng: $("#position_name_eng").val(),
+                                        work_year: $("#work_year").val(),
+                                        office_address: $("#office_address").val()
+                                    },
+                                    url: "@Url.Action("Edit", "mem_worklist")",
+                                    success: function (data) {
+                                        window.location.href = "@Url.Action("Index", "mem_worklist", new {memberId = ViewBag.memberId})";
+                                    }
+                                });
+                            }
                         });
+                        $("#mem_worklistForm").clearValidation();
                         $('#mem_worklistModal').modal({ backdrop: 'static', keyboard: false });
                     }
                 });

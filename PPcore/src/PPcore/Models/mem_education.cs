@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace PPcore.Models
         [Display(Name = "ลำดับที่")]
         public int rec_no { get; set; }
         [Display(Name = "ระดับการศึกษา")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string degree { get; set; }
         [Display(Name = "ชื่อสถาบัน")]
         public string colledge_name { get; set; }
@@ -19,6 +21,7 @@ namespace PPcore.Models
         public string x_note { get; set; }
         public string x_log { get; set; }
         public Guid id { get; set; }
+        [HiddenInput]
         public byte[] rowversion { get; set; }
     }
 }

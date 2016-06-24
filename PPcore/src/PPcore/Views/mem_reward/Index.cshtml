@@ -32,18 +32,16 @@
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.rec_no)</th>
-                        <th>@Html.DisplayNameFor(model => model.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.id)</th>
                         <th>@Html.DisplayNameFor(model => model.reward_desc)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @{ var countOrder = 0;}
                     @foreach (var item in Model)
                     {
-                        countOrder++;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.rec_no)</td>
-                            <td>@Html.DisplayFor(modelItem => item.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.reward_desc)</td>
                         </tr>
                     }
@@ -95,22 +93,25 @@
                 $('#mem_rewardSubmit').html('บันทึก');
                 $("#rec_no").prop('disabled', false);
                 $("#reward_desc").prop('disabled', false);
-                $("#mem_rewardSubmit").click(function (e) {
+                $("#mem_rewardSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create", "mem_reward")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            rec_no: $("#rec_no").val(),
-                            reward_desc: $("#reward_desc").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_reward", new {memberId = ViewBag.memberId})";
-                        }
-                    });
+                    if ($("#mem_rewardForm").valid()) {
+                        $.ajax({
+                            async: false,
+                            type: "POST",
+                            url: "@Url.Action("Create", "mem_reward")",
+                            data: {
+                                memberId: "@ViewBag.memberId",
+                                reward_desc: $("#reward_desc").val()
+                            },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_reward", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
+                $("#reward_desc").val('');
+                $("#mem_rewardForm").clearValidation();
                 $('#mem_rewardModal').modal({ backdrop: 'static', keyboard: false });
             });
 
@@ -126,22 +127,25 @@
                         $("#reward_desc").val(data.reward_desc);
                         $("#rec_no").prop('disabled', true);
                         $("#reward_desc").prop('disabled', false);
-                        $("#mem_rewardSubmit").click(function (e) {
+                        $("#mem_rewardSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
-                            $.ajax({
-                                type: "POST",
-                                data: {
-                                    id: datarow[1],
-                                    memberId: "@ViewBag.memberId",
-                                    rec_no: $("#rec_no").val(),
-                                    reward_desc: $("#reward_desc").val()
-                                },
-                                url: "@Url.Action("Edit", "mem_reward")",
-                                success: function (data) {
-                                    window.location.href = "@Url.Action("Index", "mem_reward", new {memberId = ViewBag.memberId})";
-                                }
-                            });
+                            if ($("#mem_rewardForm").valid()) {
+                                $.ajax({
+                                    type: "POST",
+                                    data: {
+                                        id: datarow[1],
+                                        memberId: "@ViewBag.memberId",
+                                        rec_no: $("#rec_no").val(),
+                                        reward_desc: $("#reward_desc").val()
+                                    },
+                                    url: "@Url.Action("Edit", "mem_reward")",
+                                    success: function (data) {
+                                        window.location.href = "@Url.Action("Index", "mem_reward", new {memberId = ViewBag.memberId})";
+                                    }
+                                });
+                            }
                         });
+                        $("#mem_rewardForm").clearValidation();
                         $('#mem_rewardModal').modal({ backdrop: 'static', keyboard: false });
                     }
                 });

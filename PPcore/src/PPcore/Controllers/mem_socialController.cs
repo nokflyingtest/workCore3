@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using PPcore.Models;
+using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace PPcore.Controllers
 {
@@ -50,18 +52,32 @@ namespace PPcore.Controllers
 
         // POST: mem_social/Create
         [HttpPost]
-        public IActionResult Create(string memberId, int rec_no, string social_desc)
+        public IActionResult Create(string memberId, string social_desc)
         {
             var member = _context.member.Single(m => m.id == new Guid(memberId));
 
-            var mem_social = new mem_social();
-            mem_social.member_code = member.member_code;
-            mem_social.rec_no = rec_no;
-            mem_social.social_desc = social_desc;
-            mem_social.x_status = "Y";
-
-            _context.mem_social.Add(mem_social);
-            _context.SaveChanges();
+            try
+            {
+                _context.Database.ExecuteSqlCommand("INSERT INTO mem_social (rec_no,member_code,social_desc,x_status) VALUES (0,'" + member.member_code + "',N'" + social_desc + "','Y')");
+            }
+            catch (SqlException ex)
+            {
+                var errno = ex.Number; var msg = "";
+                if (errno == 2627) //Violation of primary key. Handle Exception
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
+            catch (Exception ex)
+            {
+                var errno = ex.HResult; var msg = "";
+                if (ex.InnerException.Message.IndexOf("PRIMARY KEY") != -1)
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
 
             return Json(new { result = "success" });
         }

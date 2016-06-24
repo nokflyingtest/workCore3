@@ -1,13 +1,6 @@
 ﻿@model PPcore.Models.mem_worklist
 
-<form class="form-horizontal">
-<div class="form-group">
-    <label asp-for="rec_no" class="col-md-3 control-label"></label>
-    <div class="col-md-9">
-        <input asp-for="rec_no" class="form-control" />
-        <span asp-validation-for="rec_no" class="text-danger" />
-    </div>
-</div>
+<form id="mem_worklistForm" class="form-horizontal">
     <div class="form-group">
         <label asp-for="company_name_th" class="col-md-3 control-label"></label>
         <div class="col-md-9">
@@ -50,18 +43,10 @@
             <span asp-validation-for="office_address" class="text-danger" />
         </div>
     </div>
+
+</form>
 <div class="form-group">
     <div class="col-md-offset-3 col-md-9">
         <button id="mem_worklistSubmit" class="btn btn-success">บันทึก</button>
     </div>
 </div>
-</form>
-
-
-
-
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}

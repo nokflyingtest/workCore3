@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace PPcore.Models
         public int rec_no { get; set; }
         public string member_code { get; set; }
         [Display(Name = "ชื่อสถานที่ทำงาน")]
+        [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string company_name_th { get; set; }
         [Display(Name = "ชื่อสถานที่ทำงาน (ภาษาอังกฤษ)")]
         public string company_name_eng { get; set; }
@@ -25,6 +27,7 @@ namespace PPcore.Models
         public string x_note { get; set; }
         public string x_log { get; set; }
         public Guid id { get; set; }
+        [HiddenInput]
         public byte[] rowversion { get; set; }
     }
 }

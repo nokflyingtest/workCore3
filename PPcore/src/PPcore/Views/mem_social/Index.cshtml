@@ -32,7 +32,7 @@
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.rec_no)</th>
-                        <th>@Html.DisplayNameFor(model => model.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.id)</th>
                         <th>@Html.DisplayNameFor(model => model.social_desc)</th>
                     </tr>
                 </thead>
@@ -43,7 +43,7 @@
                         countOrder++;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.rec_no)</td>
-                            <td>@Html.DisplayFor(modelItem => item.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.social_desc)</td>
                         </tr>
                     }
@@ -95,22 +95,25 @@
                 $('#mem_socialSubmit').html('บันทึก');
                 $("#rec_no").prop('disabled', false);
                 $("#social_desc").prop('disabled', false);
-                $("#mem_socialSubmit").click(function (e) {
+                $("#mem_socialSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create", "mem_social")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            rec_no: $("#rec_no").val(),
-                            social_desc: $("#social_desc").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_social", new {memberId = ViewBag.memberId})";
-                        }
-                    });
+                    if ($("#mem_socialForm").valid()) {
+                        $.ajax({
+                            async: false,
+                            type: "POST",
+                            url: "@Url.Action("Create", "mem_social")",
+                            data: {
+                                memberId: "@ViewBag.memberId",
+                                social_desc: $("#social_desc").val()
+                            },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_social", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
+                $("#social_desc").val('');
+                $("#mem_socialForm").clearValidation();
                 $('#mem_socialModal').modal({ backdrop: 'static', keyboard: false });
             });
 
@@ -126,22 +129,25 @@
                         $("#social_desc").val(data.social_desc);
                         $("#rec_no").prop('disabled', true);
                         $("#social_desc").prop('disabled', false);
-                        $("#mem_socialSubmit").click(function (e) {
+                        $("#mem_socialSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
-                            $.ajax({
-                                type: "POST",
-                                data: {
-                                    id: datarow[1],
-                                    memberId: "@ViewBag.memberId",
-                                    rec_no: $("#rec_no").val(),
-                                    social_desc: $("#social_desc").val()
-                                },
-                                url: "@Url.Action("Edit", "mem_social")",
-                                success: function (data) {
-                                    window.location.href = "@Url.Action("Index", "mem_social", new {memberId = ViewBag.memberId})";
-                                }
-                            });
+                            if ($("#mem_socialForm").valid()) {
+                                $.ajax({
+                                    type: "POST",
+                                    data: {
+                                        id: datarow[1],
+                                        memberId: "@ViewBag.memberId",
+                                        rec_no: $("#rec_no").val(),
+                                        social_desc: $("#social_desc").val()
+                                    },
+                                    url: "@Url.Action("Edit", "mem_social")",
+                                    success: function (data) {
+                                        window.location.href = "@Url.Action("Index", "mem_social", new {memberId = ViewBag.memberId})";
+                                    }
+                                });
+                            }
                         });
+                        $("#mem_socialForm").clearValidation();
                         $('#mem_socialModal').modal({ backdrop: 'static', keyboard: false });
                     }
                 });

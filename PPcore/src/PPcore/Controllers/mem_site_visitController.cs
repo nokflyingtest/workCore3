@@ -72,7 +72,7 @@ namespace PPcore.Controllers
                 var errno = ex.Number; var msg = "";
                 if (errno == 2627) //Violation of primary key. Handle Exception
                 {
-                    msg = "???";
+                    msg = "duplicate";
                 }
                 return Json(new { result = "fail", error_code = errno, error_message = msg });
             }
@@ -81,7 +81,7 @@ namespace PPcore.Controllers
                 var errno = ex.HResult; var msg = "";
                 if (ex.InnerException.Message.IndexOf("PRIMARY KEY") != -1)
                 {
-                    msg = "???";
+                    msg = "duplicate";
                 }
                 return Json(new { result = "fail", error_code = errno, error_message = msg });
             }

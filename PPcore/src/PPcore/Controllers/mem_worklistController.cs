@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using PPcore.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace PPcore.Controllers
 {
@@ -50,23 +52,32 @@ namespace PPcore.Controllers
 
         // POST: mem_worklist/Create
         [HttpPost]
-        public IActionResult Create(string memberId, int rec_no, string company_name_th, string company_name_eng, string position_name_th, string position_name_eng, string work_year, string office_address)
+        public IActionResult Create(string memberId, string company_name_th, string company_name_eng, string position_name_th, string position_name_eng, string work_year, string office_address)
         {
             var member = _context.member.Single(m => m.id == new Guid(memberId));
 
-            var mem_worklist = new mem_worklist();
-            mem_worklist.member_code = member.member_code;
-            mem_worklist.rec_no = rec_no;
-            mem_worklist.company_name_th = company_name_th;
-            mem_worklist.company_name_eng = company_name_eng;
-            mem_worklist.position_name_th = position_name_th;
-            mem_worklist.position_name_eng = position_name_eng;
-            mem_worklist.work_year = work_year;
-            mem_worklist.office_address = office_address;
-            mem_worklist.x_status = "Y";
-
-            _context.mem_worklist.Add(mem_worklist);
-            _context.SaveChanges();
+            try
+            {
+                _context.Database.ExecuteSqlCommand("INSERT INTO mem_worklist (rec_no,member_code,company_name_th,company_name_eng,position_name_th,position_name_eng,work_year,office_address,x_status) VALUES (0,'" + member.member_code + "',N'" + company_name_th + "',N'" + company_name_eng + "',N'" + position_name_th + "',N'" + position_name_eng + "',N'" + work_year + "',N'" + office_address + "','Y')");
+            }
+            catch (SqlException ex)
+            {
+                var errno = ex.Number; var msg = "";
+                if (errno == 2627) //Violation of primary key. Handle Exception
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
+            catch (Exception ex)
+            {
+                var errno = ex.HResult; var msg = "";
+                if (ex.InnerException.Message.IndexOf("PRIMARY KEY") != -1)
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
 
             return Json(new { result = "success" });
         }

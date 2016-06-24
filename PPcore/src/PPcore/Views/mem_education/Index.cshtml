@@ -32,20 +32,18 @@
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.rec_no)</th>
-                        <th>@Html.DisplayNameFor(model => model.id)</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.id)</th>
                         <th>@Html.DisplayNameFor(model => model.degree)</th>
                         <th>@Html.DisplayNameFor(model => model.colledge_name)</th>
                         <th>@Html.DisplayNameFor(model => model.faculty)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @{ var countOrder = 0;}
                     @foreach (var item in Model)
                     {
-                        countOrder++;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.rec_no)</td>
-                            <td>@Html.DisplayFor(modelItem => item.id)</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.degree)</td>
                             <td>@Html.DisplayFor(modelItem => item.colledge_name)</td>
                             <td>@Html.DisplayFor(modelItem => item.faculty)</td>
@@ -101,24 +99,29 @@
                 $("#degree").prop('disabled', false);
                 $("#colledge_name").prop('disabled', false);
                 $("#faculty").prop('disabled', false);
-                $("#mem_educationSubmit").click(function (e) {
+                $("#mem_educationSubmit").unbind("click").bind("click", function (e) {
                     e.preventDefault();
-                    $.ajax({
-                        async:false,
-                        type: "POST",
-                        url: "@Url.Action("Create", "mem_education")",
-                        data: {
-                            memberId: "@ViewBag.memberId",
-                            rec_no: $("#rec_no").val(),
-                            degree: $("#degree").val(),
-                            colledge_name: $("#colledge_name").val(),
-                            faculty: $("#faculty").val()
-                        },
-                        success: function (data) {
-                            window.location.href = "@Url.Action("Index", "mem_education", new {memberId = ViewBag.memberId})";
-                        }
-                    });
+                    if ($("#mem_educationForm").valid()) {
+                        $.ajax({
+                            async: false,
+                            type: "POST",
+                            url: "@Url.Action("Create", "mem_education")",
+                            data: {
+                                memberId: "@ViewBag.memberId",
+                                degree: $("#degree").val(),
+                                colledge_name: $("#colledge_name").val(),
+                                faculty: $("#faculty").val()
+                            },
+                            success: function (data) {
+                                window.location.href = "@Url.Action("Index", "mem_education", new {memberId = ViewBag.memberId})";
+                            }
+                        });
+                    }
                 });
+                $("#degree").val('');
+                $("#colledge_name").val('');
+                $("#faculty").val('');
+                $("#mem_educationForm").clearValidation();
                 $('#mem_educationModal').modal({ backdrop: 'static', keyboard: false });
             });
 
@@ -138,24 +141,27 @@
                         $("#degree").prop('disabled', false);
                         $("#colledge_name").prop('disabled', false);
                         $("#faculty").prop('disabled', false);
-                        $("#mem_educationSubmit").click(function (e) {
+                        $("#mem_educationSubmit").unbind("click").bind("click", function (e) {
                             e.preventDefault();
-                            $.ajax({
-                                type: "POST",
-                                data: {
-                                    id: datarow[1],
-                                    memberId: "@ViewBag.memberId",
-                                    rec_no: $("#rec_no").val(),
-                                    degree: $("#degree").val(),
-                                    colledge_name: $("#colledge_name").val(),
-                                    faculty: $("#faculty").val()
-                                },
-                                url: "@Url.Action("Edit", "mem_education")",
-                                success: function (data) {
-                                    window.location.href = "@Url.Action("Index", "mem_education", new {memberId = ViewBag.memberId})";
-                                }
-                            });
+                            if ($("#mem_educationForm").valid()) {
+                                $.ajax({
+                                    type: "POST",
+                                    data: {
+                                        id: datarow[1],
+                                        memberId: "@ViewBag.memberId",
+                                        rec_no: $("#rec_no").val(),
+                                        degree: $("#degree").val(),
+                                        colledge_name: $("#colledge_name").val(),
+                                        faculty: $("#faculty").val()
+                                    },
+                                    url: "@Url.Action("Edit", "mem_education")",
+                                    success: function (data) {
+                                        window.location.href = "@Url.Action("Index", "mem_education", new {memberId = ViewBag.memberId})";
+                                    }
+                                });
+                            }
                         });
+                        $("#mem_educationForm").clearValidation();
                         $('#mem_educationModal').modal({ backdrop: 'static', keyboard: false });
                     }
                 });
