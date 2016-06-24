@@ -238,7 +238,7 @@
 
                                     <div class="col-md-2 text-right"><label asp-for="zip_code" class="control-label"></label></div>
                                     <div class="col-md-4">
-                                        <input asp-for="zip_code" class="form-control" />
+                                        <input asp-for="zip_code" class="form-control" onkeyup="setTextCAddress()" />
                                         <span asp-validation-for="zip_code" class="text-danger" />
                                     </div>
                                 </div>

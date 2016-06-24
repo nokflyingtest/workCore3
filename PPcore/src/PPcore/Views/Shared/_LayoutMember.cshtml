@@ -124,20 +124,23 @@
                     setProvinceData();
                 } else if (act == "Details") {
                     setTabColor();
-                    $('input').each(function () {
-                        if (!($(this).attr('disabled'))) {
-                            $(this).attr({ 'disabled': 'disabled' });
+                    setProvinceData();
+                    setTimeout(function () {
+                        $('input').each(function () {
+                            if (!($(this).attr('disabled'))) {
+                                $(this).attr({ 'disabled': 'disabled' });
+                            }
+                        });
+                        $('select').each(function () {
+                            if (!($(this).attr('disabled'))) {
+                                $(this).attr({ 'disabled': 'disabled' });
+                            }
+                        });
+                        if (!($('#birthdateButton').attr('disabled'))) {
+                            $('#birthdateButton').attr({ 'disabled': 'disabled' });
                         }
-                    });
-                    $('select').each(function () {
-                        if (!($(this).attr('disabled'))) {
-                            $(this).attr({ 'disabled': 'disabled' });
-                        }
-                    });
-                    if (!($('#birthdateButton').attr('disabled'))) {
-                        $('#birthdateButton').attr({ 'disabled': 'disabled' });
-                    }
-                    $('#btnGoEdit').show(); $('#btnSave').hide();
+                        $('#btnGoEdit').show(); $('#btnSave').hide();
+                    }, 1000);
                 }
             } else {
                 setTabColor();
@@ -197,9 +200,14 @@
         }
         function setTextCAddress() {
             var textc = '';
-            if ($("#subdistrict_code option:selected").text() != '') { textc += 'ตำบล/แขวง ' + $("#subdistrict_code option:selected").text(); }
-            if ($("#district_code option:selected").text() != '') { textc += ' อำเภอ ' + $("#district_code option:selected").text(); }
-            if ($("#province_code option:selected").text() != '') { textc += ' จังหวัด ' + $("#province_code option:selected").text(); }
+
+            if ($("#province_code option:selected").text() != '') { textc = ' จังหวัด ' + $("#province_code option:selected").text(); }
+            if ($("#district_code option:selected").text() != '') { textc = ' อำเภอ ' + $("#district_code option:selected").text() + textc; }
+            if ($("#subdistrict_code option:selected").text() != '') { textc = 'ตำบล/แขวง ' + $("#subdistrict_code option:selected").text() + textc; }
+
+            //if ($("#subdistrict_code option:selected").text() != '') { textc += 'ตำบล/แขวง ' + $("#subdistrict_code option:selected").text(); }
+            //if ($("#district_code option:selected").text() != '') { textc += ' อำเภอ ' + $("#district_code option:selected").text(); }
+            //if ($("#province_code option:selected").text() != '') { textc += ' จังหวัด ' + $("#province_code option:selected").text(); }
             if ($('#zip_code').val() != '') { textc += ' รหัสไปรษณีย์ ' + $('#zip_code').val(); }
             //if ($('#zone').val() != '') { textc += ' ภาค ' + $('#zone').val(); }
             //if ($('#country_code').val() != '') { textc += ' ประเทศ ' + $('#country_code').val(); }
@@ -240,7 +248,7 @@
             }
         }
 
-        function setEventDropdownProvince() { 
+        function setEventDropdownProvince() {
             $('#province_code').unbind("change").bind("change", function (e) {
                 $.ajax({
                     type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
@@ -251,14 +259,16 @@
                         $('#subdistrict_code').empty();
                         $('#subdistrict_code').prop("disabled", true);
                         $('#zip_code').val('');
+                        setTextCAddress();
                     } else {
                         $("#district_code").prop("disabled", false);
                         $('#district_code').empty();
                         $('#district_code').append(resp);
                         $('#district_code').trigger("change");
+                        setTextCAddress();
                     }
                 });
-                setTextCAddress();
+
             });
             $('#district_code').unbind("change").bind("change", function (e) {
                 $.ajax({
@@ -268,26 +278,28 @@
                         $('#subdistrict_code').empty();
                         $('#subdistrict_code').prop("disabled", true);
                         $('#zip_code').val('');
+                        setTextCAddress();
                     } else {
                         $("#subdistrict_code").prop("disabled", false);
                         $('#subdistrict_code').empty();
                         $('#subdistrict_code').append(resp);
                         $('#subdistrict_code').trigger("change");
+                        setTextCAddress();
                     }
                 });
-                setTextCAddress();
+
             });
             $('#subdistrict_code').unbind("change").bind("change", function (e) {
                 $.ajax({
                     type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
                 }).done(function (resp) {
                     if (resp == "") {
-                        $('#zip_code').val('');
+                        $('#zip_code').val(''); setTextCAddress();
                     } else {
-                        $('#zip_code').val(resp);
+                        $('#zip_code').val(resp); setTextCAddress();
                     }
                 });
-                setTextCAddress();
+
             });
         }
         function setProvinceData() {
@@ -392,7 +404,7 @@
                     }
 
                 });
-                
+
             }
         }
         function mem_productCreate(productId) {
