@@ -18,14 +18,14 @@
 <div class="form-group">
     <label asp-for="mem_train_record.course_grade" class="col-md-3 control-label"></label>
     <div class="col-md-9">
-        @{
+        @*@{
             var gradeList = new SelectList(new[]
             {
                 new SelectListItem { Text = "Good", Value = "A", Selected = true },
                 new SelectListItem { Text = "Pass", Value = "B"},
                 new SelectListItem { Text = "Fail", Value = "F"},
             }, "Value", "Text");
-        }
+        }*@
         <select asp-for="mem_train_record.course_grade" asp-items="ViewBag.course_grade" class="form-control"></select>
     </div>
 </div>

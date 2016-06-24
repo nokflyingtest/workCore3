@@ -23,12 +23,6 @@
     font-weight: normal;
     font-style: normal;
 }
-/**
-    fix bootstrap MVC for textarea border not display when is required
-*/
-textarea.input-validation-error { 
-    border-color: red;
-}
 
 .txt-color-green { color: #5cb85c; }
 .txt-color-green-light { color: #79eb2a; }
@@ -399,6 +393,9 @@ width: 100% !important;
 }
 
 input[data-val-required] {
+    border:1px solid #ff8383;
+}
+textarea[data-val-required] {
     border:1px solid #ff8383;
 }
 

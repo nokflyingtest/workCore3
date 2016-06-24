@@ -1,4 +1,7 @@
-﻿function setTableMembers(tableId) {
+﻿$.fn.clearValidation = function(){var v = $(this).validate();$('[name]',this).each(function(){v.successList.push(this);v.showErrors();});v.resetForm();v.reset();};
+
+
+function setTableMembers(tableId) {
     var tableMember = tableId.DataTable({
         responsive: true,
         "ordering": false,
