@@ -54,7 +54,8 @@ namespace PPcore.Models
         public string nationality { get; set; }
         [Display(Name = "ประเภทบัตร")]
         public string cid_type { get; set; }
-        [Display(Name = "เลขประจำตัวประชาชน")]
+        //[Display(Name = "เลขประจำตัวประชาชน")]
+        [Display(Name = "เลขบัตรประชาชน/พาสปอร์ต")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         //[StringLength(13, MinimumLength = 13, ErrorMessage = "กรุณากรอกหมายเลข 13 หลัก")]
         //[RegularExpression("([1-9][0-9]*)", ErrorMessage = "กรุณากรอกเฉพาะหมายเลข")]
@@ -114,7 +115,7 @@ namespace PPcore.Models
         //[RegularExpression(@"^[0-9]{0,15}$", ErrorMessage = "PhoneNumber should contain only numbers")]
         public string fax { get; set; }
         [Display(Name = "อีเมล")]
-        [RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "กรุณากรอกอีเมลล์แอดเดรส")]
+        //[RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "กรุณากรอกอีเมลล์แอดเดรส")]
         public string email { get; set; }
 
         [Display(Name = "หมายเลขโทรศัพท์บ้าน")]

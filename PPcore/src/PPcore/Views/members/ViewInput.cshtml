@@ -20,8 +20,12 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-2 text-right"><label asp-for="member_code" class="control-label"></label></div>
-                                <div class="col-md-4">
+                                @*<div class="col-md-4">
                                     <input asp-for="member_code" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="$('#cid_card').val($('#member_code').val());" maxlength="13"/>
+                                    <span asp-validation-for="member_code" class="text-danger" />
+                                </div>*@
+                                <div class="col-md-4">
+                                    <input asp-for="member_code" class="form-control" maxlength="13" />
                                     <span asp-validation-for="member_code" class="text-danger" />
                                 </div>
                                 <div class="col-md-2 text-right"><label asp-for="parent_code" class="control-label"></label></div>
@@ -110,8 +114,12 @@
                                     <span asp-validation-for="current_age" class="text-danger" />
                                 </div>
                                 <div class="col-md-2 text-right"><label asp-for="cid_card" class="control-label" ></label></div>
-                                <div class="col-md-4">
+                                @*<div class="col-md-4">
                                     <input asp-for="cid_card" class="form-control" onkeyup="$('#member_code').val($('#cid_card').val());"/>
+                                    <span asp-validation-for="cid_card" class="text-danger" />
+                                </div>*@
+                                <div class="col-md-4">
+                                    <input asp-for="cid_card" class="form-control" />
                                     <span asp-validation-for="cid_card" class="text-danger" />
                                 </div>
                             </div>

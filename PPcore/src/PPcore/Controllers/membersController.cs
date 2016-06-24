@@ -252,7 +252,8 @@ namespace PPcore.Controllers
             memberPic.SetAbsolutePosition(document.PageSize.Width - 30f - memberPic.ScaledWidth, document.PageSize.Height - 130f);
             memberPic.Alignment = Element.ALIGN_RIGHT;
 
-            Rectangle rect = new Rectangle(30, 36, 565, 706);
+            //Rectangle rect = new Rectangle(30, 36, 565, 706);
+            Rectangle rect = new Rectangle(30, 30, 565, 706);
             rect.Border = Rectangle.BOX;
             rect.BorderColor = BaseColor.DARK_GRAY;
             rect.BorderWidth = 1f;
@@ -321,8 +322,10 @@ namespace PPcore.Controllers
             memberInfoRow3.TotalWidth = 400f;
             memberInfoRow3.LockedWidth = true;
             memberInfoRow3.DefaultCell.VerticalAlignment = 1;
-            memberInfoRow3.SetWidths(new float[] { 78f, 77f, 40f, 25f, 25f, 50f });
-            memberInfoRow3.AddCell(new PdfPCell(new Phrase("หมายเลขบัตรประชาชน", cnb)) { Border = Rectangle.NO_BORDER });
+            //memberInfoRow3.SetWidths(new float[] { 78f, 77f, 40f, 25f, 25f, 50f });
+            memberInfoRow3.SetWidths(new float[] { 85f, 70f, 40f, 25f, 25f, 50f }); 
+            //memberInfoRow3.AddCell(new PdfPCell(new Phrase("หมายเลขบัตรประชาชน", cnb)) { Border = Rectangle.NO_BORDER });
+            memberInfoRow3.AddCell(new PdfPCell(new Phrase("เลขบัตรประชาชน/พาสปอร์ต", cnb)) { Border = Rectangle.NO_BORDER });
             memberInfoRow3.AddCell(new PdfPCell(new Phrase(cid_card, cni)) { Border = Rectangle.NO_BORDER });
             memberInfoRow3.AddCell(new PdfPCell(new Phrase("สถานภาพ", cnb)) { Border = Rectangle.NO_BORDER });
             memberInfoRow3.AddCell(new PdfPCell(new Phrase(marry_status, cni)) { Border = Rectangle.NO_BORDER });
@@ -467,14 +470,16 @@ namespace PPcore.Controllers
             {
                 for (var i = 0; i < visit.Count; i++)
                 {
-                    PdfPTable rowz = new PdfPTable(2);
+                    PdfPTable rowz = new PdfPTable(3);
                     rowz.DefaultCell.Border = Rectangle.NO_BORDER;
                     rowz.TotalWidth = 400f;
                     rowz.LockedWidth = true;
                     rowz.DefaultCell.VerticalAlignment = 1;
-                    rowz.SetWidths(new float[] { 8f, 180f });
+                    //rowz.SetWidths(new float[] { 8f, 180f });  rowz.SetWidths(new float[] { 15f, 355f });
+                    rowz.SetWidths(new float[] { 15f, 340f, 10f });
                     rowz.AddCell(new PdfPCell(new Phrase(visit[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase(visit[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
@@ -510,14 +515,15 @@ namespace PPcore.Controllers
             {
                 for (var i = 0; i < social.Count; i++)
                 {
-                    PdfPTable rowz = new PdfPTable(2);
+                    PdfPTable rowz = new PdfPTable(3);
                     rowz.DefaultCell.Border = Rectangle.NO_BORDER;
                     rowz.TotalWidth = 400f;
                     rowz.LockedWidth = true;
                     rowz.DefaultCell.VerticalAlignment = 1;
-                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.SetWidths(new float[] { 15f, 340f, 10f });
                     rowz.AddCell(new PdfPCell(new Phrase(social[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase(social[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
@@ -554,14 +560,15 @@ namespace PPcore.Controllers
             {
                 for (var i = 0; i < reward.Count; i++)
                 {
-                    PdfPTable rowz = new PdfPTable(2);
+                    PdfPTable rowz = new PdfPTable(3);
                     rowz.DefaultCell.Border = Rectangle.NO_BORDER;
                     rowz.TotalWidth = 400f;
                     rowz.LockedWidth = true;
                     rowz.DefaultCell.VerticalAlignment = 1;
-                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.SetWidths(new float[] { 15f, 340f, 10f });
                     rowz.AddCell(new PdfPCell(new Phrase(reward[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase(reward[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
@@ -597,14 +604,15 @@ namespace PPcore.Controllers
             {
                 for (var i = 0; i < education.Count; i++)
                 {
-                    PdfPTable rowz = new PdfPTable(2);
+                    PdfPTable rowz = new PdfPTable(3);
                     rowz.DefaultCell.Border = Rectangle.NO_BORDER;
                     rowz.TotalWidth = 400f;
                     rowz.LockedWidth = true;
                     rowz.DefaultCell.VerticalAlignment = 1;
-                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.SetWidths(new float[] { 15f, 340f, 10f });
                     rowz.AddCell(new PdfPCell(new Phrase(education[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase(education[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
@@ -783,12 +791,13 @@ namespace PPcore.Controllers
             {
                 for (var i = 0; i < product.Count; i++)
                 {
-                    PdfPTable rowz = new PdfPTable(2);
+                    PdfPTable rowz = new PdfPTable(3);
                     rowz.DefaultCell.Border = Rectangle.NO_BORDER; rowz.DefaultCell.VerticalAlignment = 1;
                     rowz.TotalWidth = 400f; rowz.LockedWidth = true;
-                    rowz.SetWidths(new float[] { 8f, 180f });
+                    rowz.SetWidths(new float[] { 15f, 340f, 10f });
                     rowz.AddCell(new PdfPCell(new Phrase(product[i].rec_no + ".", cnb)) { Border = Rectangle.NO_BORDER });
                     rowz.AddCell(new PdfPCell(new Phrase(product[i].desc, cni)) { Border = Rectangle.NO_BORDER });
+                    rowz.AddCell(new PdfPCell(new Phrase(" ")) { Border = Rectangle.NO_BORDER });
                     cell = new PdfPCell(rowz); cell.HorizontalAlignment = 0; cell.Border = Rectangle.NO_BORDER; cell.PaddingLeft = 30f;
                     table.AddCell(cell);
                     table.AddCell("");
@@ -831,7 +840,7 @@ namespace PPcore.Controllers
                         ptable.WriteSelectedRows(0, -1, 34, 33, cb);
                         if (i > 1)
                         {
-                            Rectangle recta = new Rectangle(30, 36, 565, 806);
+                            Rectangle recta = new Rectangle(30, 30, 565, 806);
                             recta.Border = Rectangle.BOX;
                             recta.BorderColor = BaseColor.DARK_GRAY;
                             recta.BorderWidth = 1f;

@@ -197,12 +197,12 @@
         }
         function setTextCAddress() {
             var textc = '';
-            if ($('#subdistrict_code').val() != '') { textc += 'ตำบล/แขวง ' + $('#subdistrict_code').val(); }
-            if ($('#district_code').val() != '') { textc += ' อำเภอ ' + $('#district_code').val(); }
-            if ($('#province_code').val() != '') { textc += ' จังหวัด ' + $('#province_code').val(); }
+            if ($("#subdistrict_code option:selected").text() != '') { textc += 'ตำบล/แขวง ' + $("#subdistrict_code option:selected").text(); }
+            if ($("#district_code option:selected").text() != '') { textc += ' อำเภอ ' + $("#district_code option:selected").text(); }
+            if ($("#province_code option:selected").text() != '') { textc += ' จังหวัด ' + $("#province_code option:selected").text(); }
             if ($('#zip_code').val() != '') { textc += ' รหัสไปรษณีย์ ' + $('#zip_code').val(); }
-            if ($('#zone').val() != '') { textc += ' ภาค ' + $('#zone').val(); }
-            if ($('#country_code').val() != '') { textc += ' ประเทศ ' + $('#country_code').val(); }
+            //if ($('#zone').val() != '') { textc += ' ภาค ' + $('#zone').val(); }
+            //if ($('#country_code').val() != '') { textc += ' ประเทศ ' + $('#country_code').val(); }
             $('#textc_address').val(textc);
         }
 
@@ -240,8 +240,8 @@
             }
         }
 
-        function setEventDropdownProvince() {
-            $('#province_code').on('change', function () {
+        function setEventDropdownProvince() { 
+            $('#province_code').unbind("change").bind("change", function (e) {
                 $.ajax({
                     type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
                 }).done(function (resp) {
@@ -258,8 +258,9 @@
                         $('#district_code').trigger("change");
                     }
                 });
+                setTextCAddress();
             });
-            $('#district_code').on('change', function () {
+            $('#district_code').unbind("change").bind("change", function (e) {
                 $.ajax({
                     type: 'get', url: '@Url.Action("SelectBy", "ini_subdistrict")' + '?districtCode=' + $('#district_code').val(),
                 }).done(function (resp) {
@@ -274,8 +275,9 @@
                         $('#subdistrict_code').trigger("change");
                     }
                 });
+                setTextCAddress();
             });
-            $('#subdistrict_code').on('change', function () {
+            $('#subdistrict_code').unbind("change").bind("change", function (e) {
                 $.ajax({
                     type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
                 }).done(function (resp) {
@@ -285,6 +287,7 @@
                         $('#zip_code').val(resp);
                     }
                 });
+                setTextCAddress();
             });
         }
         function setProvinceData() {
