@@ -82,24 +82,55 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    <br/>
-
-@section scripts
-{
-@RenderSection("scripts", required: false)
-
 <script>
     $(document).ready(function () {
-
-
-
+        var con = '@ViewContext.RouteData.Values["controller"]';
+        var act = '@ViewContext.RouteData.Values["action"]';
+        if (act == "Register") {
+            $.datepicker.regional['th'] = {
+                dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                yearRange: "-100:+0", yearOffSet: 543, beforeShow: dateDefault
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
+            $("#birthdate").datepicker($.datepicker.regional["th"]);
+            $('#birthdateButton').off("click").on("click", function () {
+                $('#birthdate').datepicker("show");
+            });
+        }
     });
+    function dateDefault() {
+        if ($("#birthdate").val() == "") { $("#birthdate").datepicker("setDate", new Date()); }
+    }
     function confirm() {
+        var cid_card = $('#cid_card').val().trim();
+        var fname = $('#fname').val().trim();
+        var lname = $('#lname').val().trim();
+        var birthdate = $('#birthdate').val().trim();
+        var mobile = $('#mobile').val().trim();
+        var email = $('#email').val().trim();
 
+        if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (email != '')) {
+            //var formData = new FormData();
+            //formData.append("cid_card", cid_card);
+            //formData.append("fname", fname);
+            //formData.append("lname", lname);
+            //formData.append("birthdate", birthdate);
+            //formData.append("mobile", mobile);
+            //formData.append("email", email);
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("Create", "registers")' + "?cid_card="+ cid_card,
+            }).done(function (resp) {
+                console.log(resp);
 
+            });
+
+        } else {
+            console.log('error');
+
+        }
     }
 </script>
 
-}
 </body>
 </html>
