@@ -24,13 +24,15 @@ namespace PPcore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("member_code,birthdate,building,cid_card,cid_card_pic,cid_type,country_code,current_age,district_code,email,fax,floor,fname,h_no,id,lane,latitude,lname,longitude,lot_no,marry_status,mem_group_code,mem_photo,mem_type_code,mlevel_code,mobile,mstatus_code,nationality,parent_code,place_name,province_code,religion,room,rowversion,sex,social_app_data,street,subdistrict_code,tel,texta_address,textb_address,textc_address,village,x_log,x_note,x_status,zip_code,zone")] member member)
         {
-            if (ModelState.IsValid)
-            {
+            member.member_code = member.cid_card;
+            member.x_status = "Y";
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
-            }
-            return View(member);
+            //}
+            //return View(member);
         }
 
         private bool memberExists(string id)

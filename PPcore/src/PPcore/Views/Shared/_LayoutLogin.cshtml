@@ -110,16 +110,9 @@
         var email = $('#email').val().trim();
 
         if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (email != '')) {
-            //var formData = new FormData();
-            //formData.append("cid_card", cid_card);
-            //formData.append("fname", fname);
-            //formData.append("lname", lname);
-            //formData.append("birthdate", birthdate);
-            //formData.append("mobile", mobile);
-            //formData.append("email", email);
             $.ajax({
                 type: 'post',
-                url: '@Url.Action("Create", "registers")' + "?cid_card="+ cid_card,
+                url: '@Url.Action("Create", "registers")' + "?cid_card=" + cid_card + "&fname=" + fname + "&lname=" + lname + "&birthdate=" + birthdate + "&mobile=" + mobile + "&email=" + email,
             }).done(function (resp) {
                 console.log(resp);
 
