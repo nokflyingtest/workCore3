@@ -49,7 +49,7 @@
                     </span>
                     <input id="email" type="text" class="form-control" placeholder="อีเมล">
                 </div>
-                <button class="btn btn-default btn-panel-yellow pull-left" type="button" style="width:120px" onclick="confirm();">ยืนยัน</button>
+                <button class="btn btn-default btn-panel-yellow pull-left" type="button" style="width:120px" onclick="confirm()">ยืนยัน</button>
                 <button class="btn btn-default btn-panel-yellow pull-right" type="button" style="width:120px" onclick="location.href='@Url.Action("Index", "members")'">เข้าสู่ระบบ</button>
 
             </form>
@@ -62,3 +62,22 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade modalForm1" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="registerModalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
+                <h4 class="modal-title" id="registerModalLabel" style="vertical-align:middle;">ลงทะเบียน</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="registerMsg" style="color:red;">กรุณากรอกข้อมูลให้ครบถ้วน</div>
+                <br />
+
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-panel-yellow" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

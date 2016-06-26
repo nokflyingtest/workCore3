@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
 using System.Data.SqlClient;
+using PPcore.Services;
 
 namespace PPcore.Controllers
 {
     public class registersController : Controller
     {
         private readonly PalangPanyaDBContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public registersController(PalangPanyaDBContext context)
+        public registersController(PalangPanyaDBContext context, IEmailSender emailSender)
         {
-            _context = context;    
+            _context = context;
+            _emailSender = emailSender;
         }
 
         // POST: registers/Create
@@ -28,9 +31,11 @@ namespace PPcore.Controllers
             DateTime bd = Convert.ToDateTime(birthdate);
             //birthdate = (bd.Year).ToString() + bd.Month.ToString() + bd.Day.ToString();
             birthdate = (bd.Year).ToString() + bd.ToString("MMdd");
+            string password = cid_card.Substring(cid_card.Length - 4);
             try
             {
-                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status) VALUES ('"+ cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','"+mobile+"','"+email+"','Y')");
+                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,password) VALUES ('"+ cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','"+mobile+"','"+email+"','Y','"+password+"')");
+                _emailSender.SendEmailAsync(email, "username and password", "Username: " + cid_card + "\nPassword: " + password);
             }
             catch (SqlException ex)
             {

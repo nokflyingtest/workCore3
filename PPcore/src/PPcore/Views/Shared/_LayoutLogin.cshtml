@@ -114,13 +114,15 @@
                 type: 'post',
                 url: '@Url.Action("Create", "registers")' + "?cid_card=" + cid_card + "&fname=" + fname + "&lname=" + lname + "&birthdate=" + birthdate + "&mobile=" + mobile + "&email=" + email,
             }).done(function (resp) {
-                console.log(resp);
-
+                if (resp.result == "success") {
+                    window.location.replace("@Url.Action("Index","Home")");
+                } else if (resp.result == "fail") {
+                    $('#registerMsg').text('กรุณาตรวจสอบความถูกต้องของข้อมูล');
+                    $('#registerModal').modal({ backdrop: 'static', keyboard: false });
+                }
             });
-
         } else {
-            console.log('error');
-
+            $('#registerModal').modal({ backdrop: 'static', keyboard: false });
         }
     }
 </script>
