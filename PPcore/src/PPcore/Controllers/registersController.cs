@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
+using System.Data.SqlClient;
 
 namespace PPcore.Controllers
 {
@@ -22,17 +23,35 @@ namespace PPcore.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("member_code,birthdate,building,cid_card,cid_card_pic,cid_type,country_code,current_age,district_code,email,fax,floor,fname,h_no,id,lane,latitude,lname,longitude,lot_no,marry_status,mem_group_code,mem_photo,mem_type_code,mlevel_code,mobile,mstatus_code,nationality,parent_code,place_name,province_code,religion,room,rowversion,sex,social_app_data,street,subdistrict_code,tel,texta_address,textb_address,textc_address,village,x_log,x_note,x_status,zip_code,zone")] member member)
+        public IActionResult Create(string birthdate, string cid_card, string email, string fname, string lname, string mobile)
         {
-            member.member_code = member.cid_card;
-            member.x_status = "Y";
-            //if (ModelState.IsValid)
-            //{
-                _context.Add(member);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            //}
-            //return View(member);
+            DateTime bd = Convert.ToDateTime(birthdate);
+            //birthdate = (bd.Year).ToString() + bd.Month.ToString() + bd.Day.ToString();
+            birthdate = (bd.Year).ToString() + bd.ToString("MMdd");
+            try
+            {
+                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status) VALUES ('"+ cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','"+mobile+"','"+email+"','Y')");
+            }
+            catch (SqlException ex)
+            {
+                var errno = ex.Number; var msg = "";
+                if (errno == 2627) //Violation of primary key. Handle Exception
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
+            catch (Exception ex)
+            {
+                var errno = ex.HResult; var msg = "";
+                if (ex.InnerException.Message.IndexOf("PRIMARY KEY") != -1)
+                {
+                    msg = "duplicate";
+                }
+                return Json(new { result = "fail", error_code = errno, error_message = msg });
+            }
+
+            return Json(new { result = "success" });
         }
 
         private bool memberExists(string id)

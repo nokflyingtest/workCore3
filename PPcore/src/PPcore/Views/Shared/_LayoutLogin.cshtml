@@ -108,7 +108,7 @@
         var birthdate = $('#birthdate').val().trim();
         var mobile = $('#mobile').val().trim();
         var email = $('#email').val().trim();
-
+        console.log(birthdate);
         if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (email != '')) {
             $.ajax({
                 type: 'post',
